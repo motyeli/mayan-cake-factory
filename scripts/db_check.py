@@ -42,9 +42,10 @@ def _request(env: dict[str, str], path: str, extra_headers: dict[str, str] | Non
     key = env["SUPABASE_SERVICE_ROLE_KEY"]
     headers = {"apikey": key, "Authorization": f"Bearer {key}", "Accept": "application/json"}
     headers.update(extra_headers or {})
-    req = urllib.request.Request(f"{env['SUPABASE_URL']}/rest/v1/{path}", headers=headers)
+    # URL is built from our own SUPABASE_URL setting, never from user input.
+    req = urllib.request.Request(f"{env['SUPABASE_URL']}/rest/v1/{path}", headers=headers)  # noqa: S310
     try:
-        return urllib.request.urlopen(req, timeout=20)
+        return urllib.request.urlopen(req, timeout=20)  # noqa: S310
     except urllib.error.HTTPError as exc:
         # Show the API's own error, but never echo the request headers.
         print(f"  HTTP {exc.code}: {exc.read().decode()[:200]}", file=sys.stderr)
