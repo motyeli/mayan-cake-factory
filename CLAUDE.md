@@ -2,6 +2,59 @@
 
 Working notes for this repository. Read before changing anything.
 
+## RESUME HERE
+
+Last worked: **2026-08-12**. Everything below is merged into `dev` and green.
+
+| Phase | State |
+|---|---|
+| 0 Repository foundation | ✅ |
+| 1 Supabase schema + seed | ✅ dev **and** prod, 9 migrations |
+| 2 Service skeletons | ✅ both services boot |
+| 3 UX via Stitch | ⚠️ **4 of 13 screens** — quota-limited, see below |
+| 4 Business rules | ✅ pricing, feasibility, delivery, capacity |
+| 5 AI conversation | ⏭️ **NEXT** |
+| 6 Design generation | ⏳ |
+| 7 Ordering + admin | ⏳ |
+| 8 Deployment | ⏳ |
+
+**Tests: 106 backend + 10 frontend, `ruff` clean.**
+
+### Next task — Phase 5, AI conversation
+
+Build in `backend/app/services/ai/`:
+
+1. `LLMProvider` protocol + a `MockLLM` that needs no credentials (tests depend
+   on it being deterministic).
+2. An OpenAI adapter using JSON-schema structured output. The key goes in
+   `backend/.env` as `LLM_API_KEY`, then `AI_MODE=live`. **Not yet supplied.**
+3. A specification builder that resolves catalog **names to IDs** — an unknown
+   name is a re-ask, never an invention.
+4. Missing-information logic: `CakeSpecification.missing_labels()` already
+   exists and returns customer-ready phrasing.
+5. Prompt-injection guards: system instructions are fixed and never
+   concatenated with customer text.
+6. Persist messages to `ai_conversations` with usage metadata, no hidden
+   reasoning.
+
+The engines it must call are done and tested:
+`services/pricing/engine.py`, `services/feasibility/engine.py`,
+`services/delivery/geo.py`, `services/availability/rules.py`, and the
+endpoints in `api/v1/quoting.py`.
+
+### Stitch: 9 screens still to generate
+
+Quota-limited, not broken. Briefs are ready in `docs/design/screen-briefs.md`.
+Generate **one at a time**, expect a timeout, wait 60–120 s, then
+`list_screens`. Project `2064497605592133162`, design system
+`assets/2131526806607800438`.
+
+### Still needed from the user
+
+- **OpenAI API key** → `backend/.env` (mock mode works without it)
+- **Railway account** → Phase 8
+- **Mayan's admin email/password** → Phase 7
+
 ## What this is
 
 AI-assisted custom cake design and ordering for **one** bakery in Paris. Not a
