@@ -7,7 +7,8 @@ visible in the file layout, not just in a decorator.
 
 from fastapi import APIRouter
 
-from app.api.v1 import catalog
+from app.api.v1 import catalog, quoting
 
 api_router = APIRouter()
 api_router.include_router(catalog.router, prefix="/catalog", tags=["catalog"])
+api_router.include_router(quoting.router)

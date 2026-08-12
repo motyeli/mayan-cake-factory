@@ -5,6 +5,11 @@ pydantic-settings==2.7.0
 httpx==0.28.1
 python-multipart==0.0.20
 
+# The IANA timezone database. Windows has none, and python:*-slim images do not
+# ship one either — without it ZoneInfo("Europe/Paris") raises, and every
+# lead-time and rush calculation depends on that zone.
+tzdata==2024.2
+
 # dev / test
 pytest==8.3.4
 pytest-asyncio==0.25.0
