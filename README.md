@@ -22,7 +22,7 @@ troubleshooting guides.
 | Phase | Scope | State |
 |---|---|---|
 | 0 | Repository & Git foundation | ✅ |
-| 1 | Supabase schema + seed | ⏳ |
+| 1 | Supabase schema + seed | ✅ |
 | 2 | Backend + frontend skeleton | ⏳ |
 | 3 | UX/UI via Stitch | ⏳ |
 | 4 | Catalog & business rules | ⏳ |
@@ -41,6 +41,26 @@ frontend/   Flask + Jinja + vanilla JS   ──fetch (CORS)──▶   backend/ 
                                                                   ▼
                                               Supabase: Postgres · Storage · Auth
 ```
+
+## Supabase projects
+
+Development and production are **separate projects** and never share a database, a
+service-role key, storage or secrets. Project refs are not secrets; the keys are, and they live
+only in gitignored `.env` files.
+
+| Environment | Project | Ref | Region |
+|---|---|---|---|
+| Development | `cake-factory-dev` | `ntngfmeucypgpjvdxcdo` | `eu-central-1` |
+| Production | `cake-factory-prod` | `zdbzwjqhfzjwpctmrclg` | `eu-central-1` |
+
+```bash
+supabase link --project-ref ntngfmeucypgpjvdxcdo   # dev
+supabase db push                                   # apply migrations
+python scripts/db_check.py                         # read-only seed summary
+```
+
+Seed data lives in a migration, not only in `supabase/seed.sql`, so `db push` delivers identical
+catalog rows to both remote projects. Every statement is idempotent.
 
 ## Requirements
 
