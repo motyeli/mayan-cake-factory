@@ -23,7 +23,7 @@ troubleshooting guides.
 |---|---|---|
 | 0 | Repository & Git foundation | ✅ |
 | 1 | Supabase schema + seed | ✅ |
-| 2 | Backend + frontend skeleton | ⏳ |
+| 2 | Backend + frontend skeleton | ✅ |
 | 3 | UX/UI via Stitch | ⏳ |
 | 4 | Catalog & business rules | ⏳ |
 | 5 | AI conversation | ⏳ |
@@ -90,11 +90,14 @@ SVG cake renderer stand in for the real providers.
 
 ## Tests
 
+The two services are tested separately because both define a module called `app`; putting them on
+one import path would make `import app` ambiguous.
+
 ```bash
-pytest backend/tests/unit                    # pure business rules, no network
-pytest backend/tests/integration -m integration   # against the dev Supabase project
-node --test frontend/static/js/*.test.js     # frontend logic, zero dependencies
-ruff check . && ruff format --check .
+pytest                                   # backend suite (see pyproject.toml)
+pytest -m integration                    # adds tests that hit the dev Supabase project
+cd frontend && pytest                    # frontend suite (see frontend/pytest.ini)
+ruff check .
 ```
 
 ## Branches

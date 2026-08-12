@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ app_name }} — Custom cakes in Paris{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Design your cake, from anywhere</h1>
+  <p>Describe the cake you have in mind. We turn it into a real, priced,
+     production-ready order from our bakery in Paris.</p>
+  <a class="button button--primary" href="/design">Design Your Cake</a>
+</section>
+
+<section aria-labelledby="catalog-heading">
+  <h2 id="catalog-heading">What we make</h2>
+  <p class="status" role="status" data-catalog-status>Loading our catalog…</p>
+  <ul class="catalog-list" data-catalog-list hidden></ul>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Proves the frontend reaches the backend. Replaced by the designed
+  // home page in Phase 3.
+  api.get('/api/v1/catalog')
+    .then(function (catalog) {
+      var list = document.querySelector('[data-catalog-list]');
+      var status = document.querySelector('[data-catalog-status]');
+      catalog.styles.forEach(function (style) {
+        var item = document.createElement('li');
+        item.textContent = style.name;
+        list.appendChild(item);
+      });
+      status.textContent = catalog.sizes.length + ' sizes available.';
+      list.hidden = false;
+    })
+    .catch(function (error) {
+      document.querySelector('[data-catalog-status]').textContent =
+        'We could not load the catalog just now. ' + error.message;
+    });
+</script>
+{% endblock %}

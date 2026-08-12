@@ -1,0 +1,32 @@
+{# Base layout. Real visual design lands in Phase 3 from Stitch; this
+   establishes the accessible document skeleton every page inherits. #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}Design and order a custom cake from Mayan's bakery in Paris.{% endblock %}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body data-backend-url="{{ backend_url }}" data-env="{{ app_env }}">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <nav aria-label="Primary">
+      <a class="brand" href="/">{{ app_name }}</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <p>{{ app_name }} — Paris. Generated cake images are visual representations.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
