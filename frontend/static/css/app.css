@@ -1,23 +1,17 @@
-/* Placeholder styling only. The real design system arrives in Phase 3,
-   generated through Stitch. Kept minimal so it is obvious this is a
-   scaffold and not a design decision. */
+/* Scaffold styling built on the Stitch design tokens.
+   Screen layouts are still pending — see docs/design/README.md. */
 
-:root {
-  --ink: #2c2320;
-  --paper: #fdfbf8;
-  --accent: #8a6a3f;
-  --focus: #1f6feb;
-}
+@import url("tokens.css");
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: var(--ink);
-  background: var(--paper);
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-paper);
   line-height: 1.6;
 }
 
-main { max-width: 60rem; margin: 0 auto; padding: 2rem 1.25rem; }
+main { max-width: var(--page-max); margin: 0 auto; padding: 2rem 1.25rem; }
 
 .skip-link {
   position: absolute;
@@ -26,25 +20,36 @@ main { max-width: 60rem; margin: 0 auto; padding: 2rem 1.25rem; }
 .skip-link:focus {
   left: 1rem;
   top: 1rem;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--color-ink);
+  color: var(--color-paper);
   padding: 0.5rem 1rem;
   z-index: 10;
 }
 
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 
-.site-header, .site-footer { padding: 1rem 1.25rem; border-color: #e7ded2; }
-.site-header { border-bottom: 1px solid #e7ded2; }
-.site-footer { border-top: 1px solid #e7ded2; font-size: 0.875rem; }
+.site-header, .site-footer { padding: 1rem 1.25rem; border-color: var(--color-border); }
+.site-header { border-bottom: 1px solid var(--color-border); }
+.site-footer { border-top: 1px solid var(--color-border); font-size: 0.875rem; }
 
-.brand { font-weight: 700; color: var(--ink); text-decoration: none; }
+.brand { font-weight: 700; color: var(--color-ink); text-decoration: none; }
 
 .button {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  padding: var(--space-3) var(--space-5);
+  min-height: var(--touch-min);
+  border-radius: var(--radius);
   text-decoration: none;
   font-weight: 600;
 }
-.button--primary { background: var(--accent); color: #fff; }
+.button--primary { background: var(--color-primary); color: #fff; }
+
+h1, h2, h3 {
+  font-family: var(--font-headline);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+}
+
+.hero h1 { font-size: var(--text-4xl); margin-bottom: var(--space-4); }
+
+.status { color: var(--color-ink-muted); }
