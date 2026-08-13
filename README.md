@@ -16,8 +16,29 @@ Conversation → Structured spec → Feasibility → Availability → Price → 
 
 ## Status
 
-Built in phases. See `docs/` for architecture, API, database, deployment, security and
-troubleshooting guides.
+Both environments are deployed and verified.
+
+| | Frontend | Backend |
+|---|---|---|
+| development | [frontend-development-706f](https://frontend-development-706f.up.railway.app) | [backend-development-1382](https://backend-development-1382.up.railway.app) |
+| production | [frontend-production-80b13](https://frontend-production-80b13.up.railway.app) | [backend-production-7665](https://backend-production-7665.up.railway.app) |
+
+Production is **set up but not open for business**: it runs `AI_MODE=mock` with
+no OpenAI key, and the go-live checklist in
+[docs/deployment.md](docs/deployment.md) is not yet worked through.
+
+### Documentation
+
+| | |
+|---|---|
+| [architecture.md](docs/architecture.md) | how it is put together, and why |
+| [api.md](docs/api.md) | all 41 endpoints, conventions, error codes |
+| [database.md](docs/database.md) | schema, money handling, RLS, migrations |
+| [deployment.md](docs/deployment.md) | Railway, environments, go-live checklist |
+| [security.md](docs/security.md) | trust boundaries, injection, secrets |
+| [troubleshooting.md](docs/troubleshooting.md) | what actually went wrong, and the fix |
+| [assumptions.md](docs/assumptions.md) | decisions made without being told, open questions |
+| [credentials-required.md](docs/credentials-required.md) | what is set, what is still needed |
 
 | Phase | Scope | State |
 |---|---|---|
