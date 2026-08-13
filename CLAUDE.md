@@ -4,7 +4,7 @@ Working notes for this repository. Read before changing anything.
 
 ## RESUME HERE
 
-Last worked: **2026-08-12**. Everything below is merged into `dev` and green.
+Last worked: **2026-08-13**. Everything below is merged into `dev` and green.
 
 | Phase | State |
 |---|---|
@@ -13,34 +13,32 @@ Last worked: **2026-08-12**. Everything below is merged into `dev` and green.
 | 2 Service skeletons | ✅ both services boot |
 | 3 UX via Stitch | ⚠️ **4 of 13 screens** — quota-limited, see below |
 | 4 Business rules | ✅ pricing, feasibility, delivery, capacity |
-| 5 AI conversation | ⏭️ **NEXT** |
-| 6 Design generation | ⏳ |
+| 5 AI conversation | ✅ mock + OpenAI, injection guards |
+| 6 Design generation | ⏭️ **NEXT** |
 | 7 Ordering + admin | ⏳ |
 | 8 Deployment | ⏳ |
 
-**Tests: 106 backend + 10 frontend, `ruff` clean.**
+**Tests: 170 backend + 10 frontend, `ruff` clean.**
 
-### Next task — Phase 5, AI conversation
+### Next task — Phase 6, design generation and revisions
 
-Build in `backend/app/services/ai/`:
+The AI and image provider layers already exist. What remains:
 
-1. `LLMProvider` protocol + a `MockLLM` that needs no credentials (tests depend
-   on it being deterministic).
-2. An OpenAI adapter using JSON-schema structured output. The key goes in
-   `backend/.env` as `LLM_API_KEY`, then `AI_MODE=live`. **Not yet supplied.**
-3. A specification builder that resolves catalog **names to IDs** — an unknown
-   name is a re-ask, never an invention.
-4. Missing-information logic: `CakeSpecification.missing_labels()` already
-   exists and returns customer-ready phrasing.
-5. Prompt-injection guards: system instructions are fixed and never
-   concatenated with customer text.
-6. Persist messages to `ai_conversations` with usage metadata, no hidden
-   reasoning.
+1. `POST /design-sessions/{token}/generate-design` — build the prompt with
+   `prompts.image_prompt`, call `factory.get_image_provider()`, upload to the
+   `cake-designs` Supabase bucket, insert a `cake_designs` row at version 1.
+2. `POST /design-sessions/{token}/revisions` — **enforce the 3-revision limit in
+   the backend** (409 on the 4th). Each revision must re-resolve, re-price,
+   re-check feasibility and create a NEW version; earlier versions are never
+   overwritten.
+3. `GET /design-sessions/{token}/designs` — version history with signed URLs.
+4. `POST /design-sessions/{token}/designs/{id}/approve` — one approved design per
+   session (a partial unique index already enforces this).
+5. Signed URLs from the private bucket, short expiry.
 
-The engines it must call are done and tested:
-`services/pricing/engine.py`, `services/feasibility/engine.py`,
-`services/delivery/geo.py`, `services/availability/rules.py`, and the
-endpoints in `api/v1/quoting.py`.
+Already done and usable: `services/ai/mock_images.py` renders a real SVG cake
+from the spec; `openai_llm.OpenAIImages` implements both image protocols;
+`sessions.py` handles tokens and expiry.
 
 ### Stitch: 9 screens still to generate
 
