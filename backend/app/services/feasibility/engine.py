@@ -172,7 +172,24 @@ def check_catalog_consistency(spec: CakeSpecification, catalog: Catalog) -> list
     if frosting and frosting.pickup_only and spec.fulfillment_method == "delivery":
         problems.append(f"{frosting.name} is available for collection only.")
 
-    if spec.number_of_tiers and size and spec.number_of_tiers > size.tiers and size.tiers > 1:
-        problems.append(f"{size.name} is built as {size.tiers} tiers.")
+    # A size IS a tier count: Medium is a single-tier cake. Asking for two
+    # tiers on a Medium describes a cake the bakery does not build, priced as
+    # though it were one tier. The old check only fired when the size had more
+    # than one tier, so exactly this case slipped through.
+    if spec.number_of_tiers and size and spec.number_of_tiers != size.tiers:
+        alternatives = [
+            option.name
+            for option in catalog.sizes
+            if option.active and option.tiers == spec.number_of_tiers
+        ]
+        suggestion = (
+            f" For {spec.number_of_tiers} tiers, choose {' or '.join(alternatives)}."
+            if alternatives
+            else ""
+        )
+        problems.append(
+            f"{size.name} is built as {size.tiers} "
+            f"{'tier' if size.tiers == 1 else 'tiers'}.{suggestion}"
+        )
 
     return problems

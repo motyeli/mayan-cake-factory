@@ -14,6 +14,7 @@ ignore = [
 "backend/tests/*" = ["S105", "S106"]  # test fixtures contain fake tokens
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 # Backend only. The frontend is a separate deployable service with its own
 # pytest root (frontend/pytest.ini) — both define a module called `app`, so
 # putting them on one path would make `import app` ambiguous.
