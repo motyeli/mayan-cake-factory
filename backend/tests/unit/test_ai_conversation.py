@@ -424,3 +424,19 @@ def test_date_survives_a_number_earlier_in_the_sentence():
     )
     assert got.event_date == "2026-09-12"
     assert got.servings == 20
+
+
+def test_a_past_date_from_the_model_is_corrected_not_accepted(catalog):
+    """Live regression: gpt-4.1-mini returned 2024-09-12 for '12 September'
+    because it has no clock. A past fulfilment date would fail every
+    lead-time check, so the resolver rolls it to the next occurrence."""
+    result = resolver.resolve(ExtractedSpecification(event_date="2024-09-12"), catalog)
+    assert result.specification.event_date is not None
+    assert result.specification.event_date >= date.today()
+    assert result.specification.event_date.month == 9
+    assert result.specification.event_date.day == 12
+
+
+def test_a_future_date_is_left_alone(catalog):
+    result = resolver.resolve(ExtractedSpecification(event_date="2027-03-05"), catalog)
+    assert result.specification.event_date == date(2027, 3, 5)
