@@ -2,61 +2,68 @@
 
 Last worked: **2026-08-13**. Everything below is merged into `dev` and green.
 
-**Tests: 227 backend + 32 frontend, `ruff` clean. Live OpenAI verified.**
+**Tests: 227 backend + 45 frontend, `ruff` clean. Live OpenAI verified.**
 
 | Phase | State |
 |---|---|
-| 0 Repository foundation | ✅ |
-| 1 Supabase schema + seed | ✅ dev **and** prod, 9 migrations |
-| 2 Service skeletons | ✅ |
-| 3 UX via Stitch | ⚠️ 8 screens generated, **5 customer pages built** |
-| 4 Business rules | ✅ pricing, feasibility, delivery, capacity |
-| 5 AI conversation | ✅ mock + OpenAI, injection guards |
-| 6 Design generation | ✅ async, revisions capped, uploads validated |
-| 7 Ordering + admin | ⚠️ **backend done — admin UI not built** |
-| 8 Deployment | NEXT AFTER ADMIN UI |
+| 0 Repository foundation | done |
+| 1 Supabase schema + seed | done, dev AND prod, 9 migrations |
+| 2 Service skeletons | done |
+| 3 UX via Stitch | partial: 8 screens generated, 9 pages built |
+| 4 Business rules | done: pricing, feasibility, delivery, capacity |
+| 5 AI conversation | done: mock + OpenAI, injection guards |
+| 6 Design generation | done: async, revisions capped, uploads validated |
+| 7 Ordering + admin | done: orders, 4 admin screens, CRM, audit |
+| 8 Deployment | NEXT |
 
-### A customer can complete the whole journey in a browser
+### The product works end to end, in a browser
 
-`/` then `/design` then `/design/summary` then `/design/preview` to a real
-order number. Verified in Chrome: one message produces a full specification
-and price; a revision moved 336.00 to 420.00 and redrew the cake with two
-tiers; a standard order auto-confirmed as MCF-20260813-01000 and a
-fresh-flowers order became awaiting_bakery_approval with the price marked an
-estimate.
+Customer: `/` then `/design` then `/design/summary` then `/design/preview`
+then a real order number at `/orders/<number>`.
+Admin: `/admin/login` then `/admin`, `/admin/orders`, `/admin/orders/<id>`.
 
-### Next task, the admin interface
+Verified: a revision moved 336.00 to 420.00 and redrew the cake with two
+tiers; a standard order auto-confirmed as MCF-20260813-01000; a fresh-flowers
+order became awaiting_bakery_approval with the price marked an estimate;
+approving it cleared the estimate; jumping it to completed returned 409; a
+price override from 372.00 to 399.00 was recorded with a reason.
 
-All 19 admin endpoints exist and no screen uses them. Build:
+### Next task, Phase 8 deployment
 
-1. `/admin/login` calling POST /api/v1/admin/auth/session, keeping the JWT in
-   sessionStorage and sending it as a Bearer token. Stitch screen captured at
-   docs/design/screens/admin-login.html
-2. `/admin` dashboard calling GET /api/v1/admin/dashboard. Keep the four money
-   figures visually distinct; unpaid value must never read as revenue. Screen
-   captured at docs/design/screens/admin-dashboard.html
-3. `/admin/orders` with the section 33 filters. Screen NOT yet generated.
-4. `/admin/orders/<id>` detail, approve, reject, status change, and price
-   override with a mandatory reason. Screen NOT yet generated.
+1. `npm i -g @railway/cli`, then the user runs `railway login`.
+2. Two environments, development from branch `dev` and production from `main`.
+   Two services each: root directories `backend` and `frontend`. Dockerfiles
+   and railway.toml already exist with health check paths wired.
+3. Environment variables per service. `backend/.env.production` already holds
+   the production Supabase credentials; ALLOWED_ORIGINS and the two URLs still
+   need the real Railway domains.
+4. GitHub Actions: pytest for both suites, ruff, and migration validation.
+5. The docs deliverables: architecture, api, database, deployment,
+   troubleshooting, security, assumptions, credentials-required.
+6. Verify with `railway status` and a live /health on both environments.
+   Do not claim a deploy succeeded without seeing it.
 
-Then Phase 8: Railway, CI, and the docs deliverables.
+### Cleanup owed before production
 
-Before creating Mayan's admin account: a Supabase Auth user is not enough.
-Insert a matching row in admin_profiles with active = true, or the API
-returns 403.
+- Delete `test-admin@cake-factory.local` from the dev project. It has a
+  throwaway password and only existed to exercise sign-in.
+- Create Mayan's real account: a Supabase Auth user is NOT enough. Insert a
+  matching `admin_profiles` row with `active = true`, or the API returns 403.
+- Self-host Playfair Display and DM Sans. They currently fall back to system
+  fonts, because a Google Fonts CDN link would send visitor IPs to a third
+  party (AD-12).
 
-### Stitch, how it actually behaves
+### Known gaps
 
-Generation queues rather than failing. A timeout says nothing, and retrying on
-one is how three duplicate chat screens appeared. Wait 60 to 120 seconds, then
-list_screens. If jobs never land the project is out of stored-asset space:
-delete screens in the Stitch UI and the queue drains. Everything generated so
-far is saved under docs/design/.
+- Catalog and availability have working APIs but no admin screens yet
+  (acceptance criteria 24 and 25 are API-only).
+- Stitch never produced the fulfilment screen or the two admin table screens;
+  those pages extend the existing design language instead (AD-35).
 
 ### Still needed from the user
 
 - Railway account, for Phase 8
-- Mayan's admin email and password, to create the first admin_profiles row
+- Mayan's admin email and password
 - Optional: Maps API key. The mock is production-plausible for Paris.
 
 ## What this is
