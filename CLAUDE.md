@@ -33,6 +33,25 @@ Both backends return `"database": "ok"` and `"missing_credentials": []`.
 Production reports `environment: production` and runs `AI_MODE=mock` on purpose
 — it is set up, not open for business.
 
+### Production does not yet build from `main` — open item
+
+Its services point at `main`, but `main` predates the repository-root
+Dockerfile change, so `COPY requirements.txt .` finds nothing at the root and
+**every build from `main` has failed**. What is running is the image inherited
+from duplicating the development environment: built from `dev`, running with
+production variables. It works and reaches the production database, which is
+why `/health` looks fine and the failure is easy to miss.
+
+**Fix: merge PR #10 (`dev` → `main`).** That is a production deploy, so it was
+left for the user to approve. Afterwards check for a SUCCESS on branch `main`:
+
+```bash
+railway deployment list --service backend --environment production
+```
+
+Lesson worth keeping: a healthy `/health` says the *running image* is fine. It
+says nothing about whether the last deploy succeeded. Check both.
+
 Isolation was proven rather than assumed: order `MCF-20260813-01002` returns
 200 on dev and **404 on prod**, while both show identical seeded catalogs.
 

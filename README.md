@@ -27,6 +27,13 @@ Production is **set up but not open for business**: it runs `AI_MODE=mock` with
 no OpenAI key, and the go-live checklist in
 [docs/deployment.md](docs/deployment.md) is not yet worked through.
 
+> One caveat, stated plainly: production's services point at `main`, but `main`
+> does not yet contain the repository-root Dockerfile change, so every build
+> from it has failed. What currently serves production is the image inherited
+> from duplicating the development environment — it runs, and it reaches the
+> production database, but it is not a build of `main`. PR #10 merges `dev`
+> into `main` and fixes this.
+
 ### Documentation
 
 | | |
