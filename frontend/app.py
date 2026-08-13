@@ -75,6 +75,14 @@ def create_app() -> Flask:
     def admin_dashboard():
         return render_template("admin_dashboard.html")
 
+    @app.get("/admin/orders")
+    def admin_orders():
+        return render_template("admin_orders.html")
+
+    @app.get("/admin/orders/<order_id>")
+    def admin_order_detail(order_id: str):
+        return render_template("admin_order_detail.html", order_id=order_id)
+
     @app.get("/healthz")
     def healthz():
         return {"status": "ok", "service": "frontend", "environment": app.config["APP_ENV"]}

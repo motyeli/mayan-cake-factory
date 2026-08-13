@@ -1,0 +1,106 @@
+{% extends "admin_base.html" %}
+{% block title %}Order — {{ app_name }}{% endblock %}
+{% set active_nav = 'orders' %}
+
+{# Order detail (spec §34). Every action here writes to the audit log, and a
+   price override requires a reason before the control will submit. #}
+
+{% block admin_content %}
+<p><a href="/admin/orders">← All orders</a></p>
+
+<p class="notice notice--error" data-error hidden role="alert"></p>
+<p class="notice" data-success hidden role="status"></p>
+
+<div data-detail hidden>
+  <header class="order-header">
+    <div>
+      <h1 data-order-number>—</h1>
+      <p><span data-status-badge></span> <span class="helper-text" data-created></span></p>
+    </div>
+    <div class="order-header__actions" data-actions></div>
+  </header>
+
+  <div class="admin-columns">
+    <section class="card">
+      <h2 class="panel-heading">Cake</h2>
+      <img class="detail-image" data-image hidden alt="Approved cake design">
+      <dl class="spec-list" data-spec></dl>
+    </section>
+
+    <section class="card">
+      <h2 class="panel-heading">Customer and fulfilment</h2>
+      <dl class="spec-list" data-customer></dl>
+    </section>
+  </div>
+
+  <div class="admin-columns">
+    <section class="card">
+      <h2 class="panel-heading">Price</h2>
+      <dl class="spec-list" data-breakdown></dl>
+      <p class="summary-total"><span>Total</span><strong data-total>—</strong></p>
+      <p class="price-block__estimate" data-estimate-flag hidden>
+        Estimated price, subject to your approval
+      </p>
+
+      <details class="override">
+        <summary>Override the price</summary>
+        <div class="field">
+          <label for="new-total">New total (in your currency, e.g. 420.00)</label>
+          <input id="new-total" type="number" step="0.01" min="0">
+        </div>
+        <div class="field">
+          {# Required, not optional: spec §34 says an override records why. #}
+          <label for="override-reason">Reason (required)</label>
+          <input id="override-reason" type="text" maxlength="500"
+                 placeholder="Agreed a discount with the customer by phone">
+        </div>
+        <button class="button button--primary" type="button" data-override>Save new price</button>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2 class="panel-heading">Approval and production</h2>
+      <dl class="spec-list" data-production></dl>
+      <ul class="reason-list" data-reasons></ul>
+
+      <div class="field">
+        <label for="status-select">Change status</label>
+        <select id="status-select" data-status-select></select>
+      </div>
+      <div class="field">
+        <label for="status-reason">Reason (optional)</label>
+        <input id="status-reason" type="text" maxlength="500">
+      </div>
+      <button class="button button--secondary" type="button" data-change-status>
+        Change status
+      </button>
+    </section>
+  </div>
+
+  <div class="admin-columns">
+    <section class="card">
+      <h2 class="panel-heading">Internal notes</h2>
+      <pre class="notes" data-notes></pre>
+      <div class="field">
+        <label for="note">Add a note</label>
+        <textarea id="note" rows="2" maxlength="2000"></textarea>
+      </div>
+      <button class="button button--secondary" type="button" data-add-note>Add note</button>
+    </section>
+
+    <section class="card">
+      <h2 class="panel-heading">History</h2>
+      <ol class="timeline" data-history></ol>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2 class="panel-heading">Audit log</h2>
+    <ol class="timeline" data-audit></ol>
+  </section>
+</div>
+{% endblock %}
+
+{% block admin_scripts %}
+<script src="{{ url_for('static', filename='js/admin_order_detail.js') }}"></script>
+{% endblock %}

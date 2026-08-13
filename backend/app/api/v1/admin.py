@@ -254,7 +254,10 @@ async def order_detail(order_id: str, admin: AdminIdentity = Depends(current_adm
 
     designs, _ = await supabase.select(
         "cake_designs",
-        columns="id,version_number,image_storage_path,revision_request,price_cents,customer_approved",
+        # structured_specification is what the detail screen renders the cake
+        # from; omitting it left every field showing a dash.
+        columns=("id,version_number,image_storage_path,revision_request,price_cents,"
+                 "customer_approved,structured_specification"),
         filters=(
             {"session_id": f"eq.{order['design_session_id']}"}
             if order.get("design_session_id")

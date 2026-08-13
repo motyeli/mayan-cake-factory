@@ -236,3 +236,42 @@ def test_admin_pages_have_no_external_requests(client):
         html = client.get(path).get_data(as_text=True)
         for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com"):
             assert forbidden not in html
+
+
+def test_admin_orders_list_renders(client):
+    assert client.get("/admin/orders").status_code == 200
+
+
+def test_order_list_has_the_section_33_filters(client):
+    html = client.get("/admin/orders").get_data(as_text=True)
+    for control in ('id="f-status"', 'id="f-method"', 'id="f-complexity"',
+                    'id="f-search"', 'name="rush_only"', 'name="allergen_only"',
+                    'name="special_only"'):
+        assert control in html
+
+
+def test_order_table_is_a_real_table_with_headers(client):
+    """A grid of divs is invisible to a screen reader."""
+    html = client.get("/admin/orders").get_data(as_text=True)
+    assert "<table" in html and 'scope="col"' in html
+    assert "<caption" in html
+
+
+def test_order_list_has_an_empty_state(client):
+    assert "No orders match these filters" in client.get("/admin/orders").get_data(as_text=True)
+
+
+def test_admin_order_detail_renders(client):
+    assert client.get("/admin/orders/abc-123").status_code == 200
+
+
+def test_price_override_marks_the_reason_required(client):
+    """Spec section 34: an override records why it happened."""
+    html = client.get("/admin/orders/abc-123").get_data(as_text=True)
+    assert "Reason (required)" in html
+    assert 'for="override-reason"' in html
+
+
+def test_order_detail_shows_history_and_audit(client):
+    html = client.get("/admin/orders/abc-123").get_data(as_text=True)
+    assert "data-history" in html and "data-audit" in html
