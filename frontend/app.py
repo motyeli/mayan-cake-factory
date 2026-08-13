@@ -45,6 +45,12 @@ def create_app() -> Flask:
     def home():
         return render_template("home.html")
 
+    @app.get("/orders/<order_number>")
+    def order_confirmation(order_number: str):
+        """Order confirmation, reachable by order number so the customer can
+        return to it later without an account."""
+        return render_template("confirmation.html", order_number=order_number)
+
     @app.get("/design/preview")
     def design_preview():
         """Design preview, revisions and version history."""

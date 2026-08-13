@@ -169,3 +169,28 @@ def test_preview_page_has_no_external_requests(client):
     html = client.get("/design/preview").get_data(as_text=True)
     for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com", "Material+Symbols"):
         assert forbidden not in html
+
+
+# ------------------------------------------------------ order confirmation
+
+def test_confirmation_page_renders_with_an_order_number(client):
+    response = client.get("/orders/MCF-20260913-01001")
+    assert response.status_code == 200
+    assert "MCF-20260913-01001" in response.get_data(as_text=True)
+
+
+def test_confirmation_states_no_status_of_its_own(client):
+    """Status wording comes from the backend. A page that hard-coded
+    'confirmed' would keep saying so after the bakery rejected the order."""
+    import pathlib
+
+    html = pathlib.Path("templates/confirmation.html").read_text(encoding="utf-8")
+    assert "data-status" in html
+    # The only status word in the markup is the default heading, replaced at runtime.
+    assert "Awaiting bakery approval" not in html
+
+
+def test_confirmation_has_the_return_link_control(client):
+    html = client.get("/orders/MCF-1").get_data(as_text=True)
+    assert 'for="order-link"' in html
+    assert "Keep your order link" in html
