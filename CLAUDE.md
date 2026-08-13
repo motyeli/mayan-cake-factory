@@ -14,31 +14,29 @@ Last worked: **2026-08-13**. Everything below is merged into `dev` and green.
 | 3 UX via Stitch | ⚠️ **4 of 13 screens** — quota-limited, see below |
 | 4 Business rules | ✅ pricing, feasibility, delivery, capacity |
 | 5 AI conversation | ✅ mock + OpenAI, injection guards |
-| 6 Design generation | ⏭️ **NEXT** |
-| 7 Ordering + admin | ⏳ |
+| 6 Design generation | ✅ async, revisions capped, uploads validated |
+| 7 Ordering + admin | ⏭️ **NEXT** |
 | 8 Deployment | ⏳ |
 
-**Tests: 170 backend + 10 frontend, `ruff` clean.**
+**Tests: 196 backend + 10 frontend, `ruff` clean. Live OpenAI verified.**
 
-### Next task — Phase 6, design generation and revisions
+### Next task — Phase 7, ordering and admin
 
-The AI and image provider layers already exist. What remains:
+1. `POST /api/v1/orders` — commit through `create_order_atomic` (already in the
+   database). Auto-confirm when feasibility allows and lead time clears;
+   otherwise `awaiting_bakery_approval` with the price shown as an estimate.
+2. Admin auth — `POST /api/v1/admin/auth/session` proxies the Supabase password
+   grant; verify the returned JWT via the Auth API (see AD-08).
+3. Admin dashboard — keep order value, paid, outstanding and estimated
+   **visually distinct**; unpaid orders must never read as revenue (§32).
+4. Order list with the §33 filters, order detail, approve/reject.
+5. Status transitions validated in Python; price overrides recorded with
+   previous price, new price, admin, timestamp and reason (§34).
+6. Catalog / pricing / availability / settings CRUD + audit log.
 
-1. `POST /design-sessions/{token}/generate-design` — build the prompt with
-   `prompts.image_prompt`, call `factory.get_image_provider()`, upload to the
-   `cake-designs` Supabase bucket, insert a `cake_designs` row at version 1.
-2. `POST /design-sessions/{token}/revisions` — **enforce the 3-revision limit in
-   the backend** (409 on the 4th). Each revision must re-resolve, re-price,
-   re-check feasibility and create a NEW version; earlier versions are never
-   overwritten.
-3. `GET /design-sessions/{token}/designs` — version history with signed URLs.
-4. `POST /design-sessions/{token}/designs/{id}/approve` — one approved design per
-   session (a partial unique index already enforces this).
-5. Signed URLs from the private bucket, short expiry.
-
-Already done and usable: `services/ai/mock_images.py` renders a real SVG cake
-from the spec; `openai_llm.OpenAIImages` implements both image protocols;
-`sessions.py` handles tokens and expiry.
+Already done and usable: `create_order_atomic` and `reserve_production_capacity`
+(Phase 1, overbooking guard verified), all four rule engines (Phase 4),
+`storage.signed_url`, and the design approval flow.
 
 ### Stitch: 9 screens still to generate
 
