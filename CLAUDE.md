@@ -126,9 +126,12 @@ python frontend/app.py
   `import app` ambiguous. Backend uses `pyproject.toml`, frontend uses
   `frontend/pytest.ini`.
 - **Stitch generation times out but still succeeds.** Do not retry on timeout —
-  it starts a second job. Wait 60–120 s, then `list_screens`. One job at a time
-  per project; a concurrent call returns `Request contains an invalid argument`.
-  A create call timing out is NOT evidence that nothing was created.
+  each retry queues another job (this is why three identical chat screens
+  exist). Wait 60–120 s, then `list_screens`. A create call timing out is NOT
+  evidence that nothing was created.
+- **If Stitch jobs never land, the project is out of stored-asset space.** They
+  queue rather than fail. Delete unused assets in the Stitch UI and the queue
+  drains immediately. This is not a generation quota and waiting does not help.
 - **PostgREST has no multi-statement transactions.** Order commit + capacity
   reservation is one plpgsql function, `create_order_atomic`. Do not split it.
 - **`supabase-py` is synchronous** and would block the event loop. Use the

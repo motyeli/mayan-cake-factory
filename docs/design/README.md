@@ -52,30 +52,26 @@ zero screens existed; that was wrong, and this correction records why.
 > Firing a second generation while one is in flight returns
 > `Request contains an invalid argument`. Screens must be generated sequentially.
 
-### Generation stopped working after four screens — likely a quota
+### Why generation appeared to stop — corrected diagnosis
 
-Four screens generated successfully in the first window. Every attempt afterwards
-failed, and the evidence points at a **usage quota rather than anything about the
-prompts**:
+An earlier note here concluded that generation had stopped on a **usage quota**.
+That was wrong, and the correction is worth keeping because the wrong diagnosis
+was reasonable and still misleading.
 
-| Attempt | Complexity | Images | Outcome |
-|---|---|---|---|
-| Home page | very large, 8294 px | 9 generated photos | ✅ succeeded |
-| Order confirmation | medium | 1 | ✅ succeeded |
-| Staff sign-in | tiny | 0 | ✅ succeeded |
-| Design chat (detailed) | medium | 0 | ❌ failed |
-| Design chat (condensed) | small | 0 | ❌ failed |
-| Design chat (minimal, 2 sentences) | tiny | 0 | ❌ failed |
-| Specification summary | small | 0 | ❌ rejected outright |
-| Admin dashboard | medium | 0 | ❌ failed |
+What actually happened: the requests were **queued, not rejected**. The Stitch
+project had hit a **stored-asset limit**, so new work sat in the queue
+indefinitely. Freeing space in the Stitch UI drained it, and four screens that
+had "failed" hours earlier — three chat variants and the admin dashboard —
+appeared at once.
 
-The failures are **time-ordered, not complexity-ordered**. A two-sentence prompt
-fails while an 8294 px page with nine generated photographs succeeded earlier.
-Prompt size, layout complexity and image count are all ruled out by this table.
+> [!important] A timeout means nothing about success or failure
+> `generate_screen_from_text` almost always times out. The job may complete
+> seconds later, minutes later, or only once storage frees up. **Never retry on
+> a timeout** — each retry queues another job, which is why three identical chat
+> screens exist.
 
-**What to do:** wait for the quota window to reset, then continue generating the
-remaining screens one at a time using the procedure above. Check the Stitch UI for
-the account's current usage and limits.
+**If generation seems stuck:** check stored assets in the Stitch UI and delete
+what is not needed, rather than waiting for a quota window that does not exist.
 
 ## Screens generated so far
 
