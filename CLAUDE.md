@@ -1,55 +1,63 @@
-# CLAUDE.md
-
-Working notes for this repository. Read before changing anything.
-
 ## RESUME HERE
 
 Last worked: **2026-08-13**. Everything below is merged into `dev` and green.
+
+**Tests: 227 backend + 32 frontend, `ruff` clean. Live OpenAI verified.**
 
 | Phase | State |
 |---|---|
 | 0 Repository foundation | ✅ |
 | 1 Supabase schema + seed | ✅ dev **and** prod, 9 migrations |
-| 2 Service skeletons | ✅ both services boot |
-| 3 UX via Stitch | ⚠️ **4 of 13 screens** — quota-limited, see below |
+| 2 Service skeletons | ✅ |
+| 3 UX via Stitch | ⚠️ 8 screens generated, **5 customer pages built** |
 | 4 Business rules | ✅ pricing, feasibility, delivery, capacity |
 | 5 AI conversation | ✅ mock + OpenAI, injection guards |
 | 6 Design generation | ✅ async, revisions capped, uploads validated |
-| 7 Ordering + admin | ⏭️ **NEXT** |
-| 8 Deployment | ⏳ |
+| 7 Ordering + admin | ⚠️ **backend done — admin UI not built** |
+| 8 Deployment | NEXT AFTER ADMIN UI |
 
-**Tests: 196 backend + 10 frontend, `ruff` clean. Live OpenAI verified.**
+### A customer can complete the whole journey in a browser
 
-### Next task — Phase 7, ordering and admin
+`/` then `/design` then `/design/summary` then `/design/preview` to a real
+order number. Verified in Chrome: one message produces a full specification
+and price; a revision moved 336.00 to 420.00 and redrew the cake with two
+tiers; a standard order auto-confirmed as MCF-20260813-01000 and a
+fresh-flowers order became awaiting_bakery_approval with the price marked an
+estimate.
 
-1. `POST /api/v1/orders` — commit through `create_order_atomic` (already in the
-   database). Auto-confirm when feasibility allows and lead time clears;
-   otherwise `awaiting_bakery_approval` with the price shown as an estimate.
-2. Admin auth — `POST /api/v1/admin/auth/session` proxies the Supabase password
-   grant; verify the returned JWT via the Auth API (see AD-08).
-3. Admin dashboard — keep order value, paid, outstanding and estimated
-   **visually distinct**; unpaid orders must never read as revenue (§32).
-4. Order list with the §33 filters, order detail, approve/reject.
-5. Status transitions validated in Python; price overrides recorded with
-   previous price, new price, admin, timestamp and reason (§34).
-6. Catalog / pricing / availability / settings CRUD + audit log.
+### Next task, the admin interface
 
-Already done and usable: `create_order_atomic` and `reserve_production_capacity`
-(Phase 1, overbooking guard verified), all four rule engines (Phase 4),
-`storage.signed_url`, and the design approval flow.
+All 19 admin endpoints exist and no screen uses them. Build:
 
-### Stitch: 9 screens still to generate
+1. `/admin/login` calling POST /api/v1/admin/auth/session, keeping the JWT in
+   sessionStorage and sending it as a Bearer token. Stitch screen captured at
+   docs/design/screens/admin-login.html
+2. `/admin` dashboard calling GET /api/v1/admin/dashboard. Keep the four money
+   figures visually distinct; unpaid value must never read as revenue. Screen
+   captured at docs/design/screens/admin-dashboard.html
+3. `/admin/orders` with the section 33 filters. Screen NOT yet generated.
+4. `/admin/orders/<id>` detail, approve, reject, status change, and price
+   override with a mandatory reason. Screen NOT yet generated.
 
-Quota-limited, not broken. Briefs are ready in `docs/design/screen-briefs.md`.
-Generate **one at a time**, expect a timeout, wait 60–120 s, then
-`list_screens`. Project `2064497605592133162`, design system
-`assets/2131526806607800438`.
+Then Phase 8: Railway, CI, and the docs deliverables.
+
+Before creating Mayan's admin account: a Supabase Auth user is not enough.
+Insert a matching row in admin_profiles with active = true, or the API
+returns 403.
+
+### Stitch, how it actually behaves
+
+Generation queues rather than failing. A timeout says nothing, and retrying on
+one is how three duplicate chat screens appeared. Wait 60 to 120 seconds, then
+list_screens. If jobs never land the project is out of stored-asset space:
+delete screens in the Stitch UI and the queue drains. Everything generated so
+far is saved under docs/design/.
 
 ### Still needed from the user
 
-- **OpenAI API key** → `backend/.env` (mock mode works without it)
-- **Railway account** → Phase 8
-- **Mayan's admin email/password** → Phase 7
+- Railway account, for Phase 8
+- Mayan's admin email and password, to create the first admin_profiles row
+- Optional: Maps API key. The mock is production-plausible for Paris.
 
 ## What this is
 
@@ -125,13 +133,21 @@ python frontend/app.py
 - **Separate test roots.** Both services define `app`; one import path makes
   `import app` ambiguous. Backend uses `pyproject.toml`, frontend uses
   `frontend/pytest.ini`.
-- **Stitch generation times out but still succeeds.** Do not retry on timeout —
-  each retry queues another job (this is why three identical chat screens
-  exist). Wait 60–120 s, then `list_screens`. A create call timing out is NOT
-  evidence that nothing was created.
-- **If Stitch jobs never land, the project is out of stored-asset space.** They
-  queue rather than fail. Delete unused assets in the Stitch UI and the queue
-  drains immediately. This is not a generation quota and waiting does not help.
+- **Stitch generation times out but still succeeds.** Never retry on a timeout —
+  each retry queues another job. Wait 60–120 s, then `list_screens`. If jobs
+  never land, the project is out of stored-asset space: delete screens in the
+  UI and the queue drains. Not a generation quota; waiting does not help.
+- **Stitch HTML is a design reference, never shipped.** It carries a Tailwind
+  CDN script, a Google Fonts link and the Material Symbols icon font. Rebuild
+  layouts on `tokens.css` with inline SVG icons.
+- **Stitch also invents business facts.** Its home page promised a two-week lead
+  time and a 50% credit-card deposit. Take the layout; read every price, policy
+  and disclaimer from the catalog endpoint at runtime.
+- **Kill stale dev servers by port before debugging.** An old backend holding
+  port 8001 served only 2 routes, so a 404 looked exactly like a CORS failure.
+  Check `/openapi.json` first.
+- **Flask runs with `use_reloader=False`** — a newly added route 404s until the
+  server is restarted.
 - **PostgREST has no multi-statement transactions.** Order commit + capacity
   reservation is one plpgsql function, `create_order_atomic`. Do not split it.
 - **`supabase-py` is synchronous** and would block the event loop. Use the
