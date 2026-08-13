@@ -112,3 +112,32 @@ def test_summary_page_marks_the_confirm_step(client):
     assert 'aria-current="step"' in html
     assert "Create my design" in html
     assert "Keep editing" in html
+
+
+# ------------------------------------------------------- home page content
+
+def test_home_page_states_no_business_facts_of_its_own():
+    """The generated design copy invented a two-week lead time, a 50% credit
+    card deposit and a 14-day refund policy — none of which this product has.
+    Every business fact must come from the catalog endpoint at runtime, so the
+    marketing page cannot contradict the rule engine."""
+    import pathlib
+
+    html = pathlib.Path("templates/home.html").read_text(encoding="utf-8")
+    for invented in ("2 weeks", "two weeks", "50% deposit", "credit card",
+                     "14 days", "Rue Royale", "tasting", "4-6 weeks"):
+        assert invented.lower() not in html.lower(), (
+            f"'{invented}' is hard-coded in the template instead of coming from settings"
+        )
+
+
+def test_home_page_has_hooks_for_settings_driven_copy(client):
+    html = client.get("/").get_data(as_text=True)
+    for hook in ("data-lead-time", "data-allergen", "data-payment",
+                 "data-cancellation", "data-visual-disclaimer", "data-zones"):
+        assert hook in html
+
+
+def test_hero_image_has_meaningful_alt_text(client):
+    html = client.get("/").get_data(as_text=True)
+    assert "buttercream" in html and "alt=" in html

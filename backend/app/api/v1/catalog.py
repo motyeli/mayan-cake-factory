@@ -27,12 +27,58 @@ PUBLIC_CATALOG = {
 }
 
 
+# Settings the public site may read. An allow-list, not a filter: capacity
+# numbers, approval thresholds and internal policy must never leak just
+# because someone adds a settings row later.
+PUBLIC_SETTINGS = (
+    "bakery_name",
+    "bakery_address",
+    "currency",
+    "default_lead_time_hours",
+    "min_lead_time_hours",
+    "max_revisions",
+    "design_link_expiration_days",
+    "allergen_disclaimer",
+    "visual_disclaimer",
+    "inspiration_disclaimer",
+    "cancellation_policy",
+    "payment_instructions",
+)
+
+
 @router.get("", summary="Full public catalog")
-async def get_catalog() -> dict[str, list[dict]]:
-    result: dict[str, list[dict]] = {}
+async def get_catalog() -> dict:
+    """Everything the public site renders from.
+
+    The site takes its facts from here rather than from copy written into a
+    template, so a lead time or a cancellation policy cannot say one thing on
+    the home page and another in the rule engine.
+    """
+    result: dict = {}
     for key, (table, columns) in PUBLIC_CATALOG.items():
         rows, _ = await supabase.select(
             table, columns=columns, filters={"active": "eq.true"}, order="display_order"
         )
         result[key] = rows
+
+    zones, _ = await supabase.select(
+        "delivery_zones",
+        columns="id,name,min_distance_km,max_distance_km,delivery_fee_cents,requires_manual_approval,display_order",
+        filters={"active": "eq.true"},
+        order="display_order",
+    )
+    result["delivery_zones"] = zones
+
+    slots, _ = await supabase.select(
+        "time_slots",
+        columns="id,start_time,end_time,label,display_order",
+        filters={"active": "eq.true"},
+        order="display_order",
+    )
+    result["time_slots"] = slots
+
+    rows, _ = await supabase.select("settings", columns="key,value")
+    result["settings"] = {
+        row["key"]: row["value"] for row in rows if row["key"] in PUBLIC_SETTINGS
+    }
     return result

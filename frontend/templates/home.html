@@ -1,40 +1,107 @@
 {% extends "base.html" %}
 {% block title %}{{ app_name }} — Custom cakes in Paris{% endblock %}
 
+{# Layout follows the Stitch home page (docs/design/screenshots/home.jpg).
+   The COPY does not: Stitch invented a two-week lead time, a 50% credit-card
+   deposit and a 14-day refund policy, none of which this product has. Every
+   business fact below is loaded from the catalog endpoint, so the page cannot
+   promise something the rule engine will refuse. #}
+
 {% block content %}
+
 <section class="hero">
-  <h1>Design your cake, from anywhere</h1>
-  <p>Describe the cake you have in mind. We turn it into a real, priced,
-     production-ready order from our bakery in Paris.</p>
-  <a class="button button--primary" href="/design">Design Your Cake</a>
+  <div class="hero__text">
+    <h1>Design your cake,<br>from anywhere</h1>
+    <p class="hero__lead">
+      Describe the cake you imagine. We turn it into a real, priced,
+      production-ready order from our Paris atelier.
+    </p>
+    <p>
+      <a class="button button--primary" href="/design">Design Your Cake</a>
+      <a class="button button--quiet" href="#styles">See example styles</a>
+    </p>
+    <p class="helper-text">Free to design. No account needed.</p>
+  </div>
+  <img class="hero__image"
+       src="{{ url_for('static', filename='images/hero-cake.jpg') }}"
+       alt="A single-tier cake finished in ivory buttercream, topped with fresh peonies and lavender, on a pale cake stand."
+       width="848" height="1264" loading="eager">
 </section>
 
-<section aria-labelledby="catalog-heading">
-  <h2 id="catalog-heading">What we make</h2>
-  <p class="status" role="status" data-catalog-status>Loading our catalog…</p>
-  <ul class="catalog-list" data-catalog-list hidden></ul>
+<section class="page" id="how-it-works" aria-labelledby="how-heading">
+  <h2 id="how-heading">How it works</h2>
+  <ol class="steps">
+    <li><strong>Describe it</strong><span>Tell us about the event and the cake you have in mind.</span></li>
+    <li><strong>We shape it</strong><span>We suggest a size, flavour and structure that actually work.</span></li>
+    <li><strong>See it</strong><span>We create a visual concept, and you can refine it <span data-max-revisions>three</span> times.</span></li>
+    <li><strong>Order it</strong><span>Confirm collection or Paris delivery and get your order number.</span></li>
+  </ol>
+</section>
+
+<section class="page" id="styles" aria-labelledby="styles-heading">
+  <h2 id="styles-heading">Our styles</h2>
+  <p class="status" role="status" data-styles-status>Loading our styles…</p>
+  <ul class="style-grid" data-styles hidden></ul>
+</section>
+
+<section class="band" aria-labelledby="pricing-heading">
+  <div class="page">
+    <h2 id="pricing-heading">Clear pricing, before you order</h2>
+    <ul class="price-grid" data-sizes></ul>
+    <p class="helper-text" data-price-note>
+      Final price depends on flavour, finish and decoration. You always see the
+      full breakdown before you confirm.
+    </p>
+  </div>
+</section>
+
+<section class="page" aria-labelledby="fulfilment-heading">
+  <h2 id="fulfilment-heading">Collection &amp; delivery</h2>
+  <div class="two-up">
+    <div class="card">
+      <h3>Collect from the atelier</h3>
+      <p>Free. Two-hour windows, <span data-slot-range>10:00–18:00</span>.</p>
+      <p class="helper-text" data-address></p>
+    </div>
+    <div class="card">
+      <h3>Delivery across Paris</h3>
+      <ul class="plain-list" data-zones></ul>
+      <p class="helper-text">Beyond the standard area we arrange delivery individually.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="questions" aria-labelledby="faq-heading">
+  <h2 id="faq-heading">Questions</h2>
+  <div class="faq">
+    <details>
+      <summary>How far ahead should I order?</summary>
+      <p data-lead-time>We ask for at least 48 hours' notice.</p>
+    </details>
+    <details>
+      <summary>Can you match a photo I send?</summary>
+      <p data-inspiration>An inspiration image is a design direction, not a guarantee of an exact copy.</p>
+    </details>
+    <details>
+      <summary>Do you handle allergies?</summary>
+      <p data-allergen></p>
+    </details>
+    <details>
+      <summary>How do I pay?</summary>
+      <p data-payment></p>
+    </details>
+    <details>
+      <summary>Can I change or cancel my order?</summary>
+      <p data-cancellation></p>
+    </details>
+  </div>
+</section>
+
+<section class="page">
+  <p class="notice" data-visual-disclaimer></p>
 </section>
 {% endblock %}
 
 {% block scripts %}
-<script>
-  // Proves the frontend reaches the backend. Replaced by the designed
-  // home page in Phase 3.
-  api.get('/api/v1/catalog')
-    .then(function (catalog) {
-      var list = document.querySelector('[data-catalog-list]');
-      var status = document.querySelector('[data-catalog-status]');
-      catalog.styles.forEach(function (style) {
-        var item = document.createElement('li');
-        item.textContent = style.name;
-        list.appendChild(item);
-      });
-      status.textContent = catalog.sizes.length + ' sizes available.';
-      list.hidden = false;
-    })
-    .catch(function (error) {
-      document.querySelector('[data-catalog-status]').textContent =
-        'We could not load the catalog just now. ' + error.message;
-    });
-</script>
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
 {% endblock %}
