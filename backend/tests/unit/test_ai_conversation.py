@@ -440,3 +440,43 @@ def test_a_past_date_from_the_model_is_corrected_not_accepted(catalog):
 def test_a_future_date_is_left_alone(catalog):
     result = resolver.resolve(ExtractedSpecification(event_date="2027-03-05"), catalog)
     assert result.specification.event_date == date(2027, 3, 5)
+
+
+# ============================================ regressions from the design flow ==
+
+def test_tier_count_is_extracted():
+    """Live regression: 'make it two tiers' changed nothing, so the image
+    showed two tiers while the order said one, at the wrong price."""
+    assert extract_from_text("Actually make it two tiers", today=TODAY).tiers == 2
+    assert extract_from_text("make it a 2-tier cake", today=TODAY).tiers == 2
+    assert extract_from_text("single tier please", today=TODAY).tiers == 1
+    assert extract_from_text("a lovely cake", today=TODAY).tiers is None
+
+
+def test_a_tier_revision_changes_price_and_complexity(catalog):
+    """A structural revision must move the money, not just the picture."""
+    from app.services.pricing.engine import calculate_price
+
+    one = CakeSpecification(size_id=SIZE_MEDIUM, design_style_id=STYLE_MINIMALIST,
+                            number_of_tiers=1, servings=20)
+    two = one.model_copy(update={"number_of_tiers": 2})
+
+    price_one = calculate_price(one, catalog, today=TODAY)
+    price_two = calculate_price(two, catalog, today=TODAY)
+    assert price_two.complexity_level > price_one.complexity_level
+    assert price_two.total_cents > price_one.total_cents
+
+
+def test_component_names_do_not_leak_into_the_colour_palette():
+    """'raspberry cream' put 'cream' in the palette; 'edible gold leaf' put
+    'gold' there. Both overwrote the customer's real colours."""
+    got = extract_from_text(
+        "vanilla with raspberry cream, buttercream outside, floral in light pink",
+        today=TODAY,
+    )
+    assert got.colors == ["light pink"]
+    assert "cream" not in got.colors
+
+
+def test_cream_is_still_a_colour_when_asked_for_as_one():
+    assert "cream" in extract_from_text("ivory and cream colours", today=TODAY).colors

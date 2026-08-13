@@ -102,6 +102,21 @@ def _find_all(text: str, options: tuple[str, ...]) -> list[str]:
     return [o for o in found if not any(o != other and o in other for other in found)]
 
 
+_TIER_WORDS = {"single": 1, "one": 1, "two": 2, "double": 2, "three": 3, "triple": 3,
+               "four": 4, "1": 1, "2": 2, "3": 3, "4": 4}
+
+
+def _parse_tiers(text: str) -> int | None:
+    """Tier count from "two tiers", "2-tier", "single tier".
+
+    Structural, so it must reach the specification: a revision saying "make it
+    two tiers" that only changed the image prompt would show the customer a
+    two-tier cake while the order said one, at the wrong price.
+    """
+    match = re.search(r"\b(single|one|two|double|three|triple|four|[1-4])[- ]?tier\w*\b", text)
+    return _TIER_WORDS.get(match.group(1)) if match else None
+
+
 def _parse_servings(text: str) -> int | None:
     for pattern in (
         r"(\d{1,3})\s*(?:people|guests|persons|servings|portions|slices)",
@@ -181,6 +196,7 @@ def extract_from_text(text: str, *, today: date | None = None) -> ExtractedSpeci
 
     extracted.event_date = _parse_date(lowered, today)
     extracted.servings = _parse_servings(lowered)
+    extracted.tiers = _parse_tiers(lowered)
 
     flavor = _find_first(lowered, _FLAVORS)
     filling = _find_first(lowered, _FILLINGS)
@@ -229,9 +245,13 @@ def extract_from_text(text: str, *, today: date | None = None) -> ExtractedSpeci
 
     # "edible gold leaf" is a decoration. The word gold inside it is not a
     # colour choice, and letting it through overwrote the real palette.
+    # Component names are not colour choices. "raspberry cream" put "cream"
+    # in the palette and "edible gold leaf" put "gold" there, both overwriting
+    # what the customer actually asked for.
     colour_text = lowered
-    for hit in decoration_hits:
-        colour_text = colour_text.replace(hit, " ")
+    for hit in [*decoration_hits, flavor, filling, frosting]:
+        if hit:
+            colour_text = colour_text.replace(hit, " ")
     extracted.colors = _find_all(colour_text, _COLORS)
     extracted.inscription = _parse_inscription(lowered, raw)
 

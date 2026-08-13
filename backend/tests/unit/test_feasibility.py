@@ -268,3 +268,21 @@ def test_size_too_small_for_guest_count_is_reported(catalog):
 
 def test_consistent_specification_has_no_problems(catalog):
     assert check_catalog_consistency(spec(), catalog) == []
+
+
+def test_asking_for_more_tiers_than_the_size_provides_is_caught(catalog):
+    """Live regression: 'make it two tiers' on a Medium produced tiers=2 with a
+    single-tier size and a single-tier price — an unbuildable, mispriced cake.
+    The old check only fired when the size already had more than one tier."""
+    problems = check_catalog_consistency(spec(number_of_tiers=2), catalog)
+    assert problems
+    assert "Medium is built as 1 tier" in problems[0]
+    assert "Two-Tier" in problems[0]  # names a size that does have two tiers
+
+
+def test_a_matching_tier_count_is_not_flagged(catalog):
+    from catalog_fixture import SIZE_TWO_TIER
+
+    assert check_catalog_consistency(
+        spec(size_id=SIZE_TWO_TIER, servings=60, number_of_tiers=2), catalog
+    ) == []
