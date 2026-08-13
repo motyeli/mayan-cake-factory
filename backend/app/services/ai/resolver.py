@@ -82,14 +82,35 @@ def _match_many(values: list[str], options: list) -> tuple[list, list[str]]:
     return matched, missed
 
 
-def _parse_date(value: str | None) -> date | None:
+def _parse_date(value: str | None, today: date | None = None) -> date | None:
     if not value:
         return None
+
+    today = today or date.today()
+    parsed = None
     for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d.%m.%Y", "%d %B %Y", "%B %d %Y", "%d %b %Y"):
         try:
-            return datetime.strptime(value.strip(), fmt).date()
+            parsed = datetime.strptime(value.strip(), fmt).date()
+            break
         except ValueError:
             continue
+
+    if parsed is None:
+        return None
+    if parsed >= today:
+        return parsed
+
+    # A language model has no clock and dates from its training era: in live
+    # testing "12 September" came back as 2024-09-12. A past fulfilment date
+    # would fail every lead-time check, so the year is corrected to the next
+    # occurrence rather than accepted.
+    for years in (1, 2):
+        try:
+            candidate = parsed.replace(year=parsed.year + years)
+        except ValueError:  # 29 February in a non-leap year
+            return None
+        if candidate >= today:
+            return candidate
     return None
 
 

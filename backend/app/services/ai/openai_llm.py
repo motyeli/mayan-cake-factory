@@ -12,6 +12,7 @@ of breaking the order flow.
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Any
 
 import httpx
@@ -102,8 +103,16 @@ class OpenAILLM:
     ) -> AssistantTurn:
         # The catalog and current state go in the SYSTEM role; only customer
         # words go in the user role, and each is wrapped as data.
+        # The model has no clock. Without this it dates orders from its
+        # training era: "12 September" came back as 2024-09-12 in live
+        # testing, which would fail every lead-time check downstream.
+        today = date.today()
         system = (
             f"{SYSTEM_PROMPT}\n\n"
+            f"TODAY IS {today.isoformat()} ({today.strftime('%A %d %B %Y')}). "
+            "Every date a customer gives is in the future. Never return a date "
+            "in the past; if only a day and month are given, choose the next "
+            "occurrence.\n\n"
             f"CATALOG — offer nothing outside this:\n{catalog_summary}\n\n"
             f"ALREADY KNOWN — do not ask again:\n{specification_state}\n\n"
             f"STILL NEEDED: {', '.join(missing) if missing else 'nothing'}"
