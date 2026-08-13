@@ -95,3 +95,20 @@ def test_icon_buttons_have_accessible_names(client):
     html = client.get("/design").get_data(as_text=True)
     assert "Send message" in html
     assert "Attach an inspiration image" in html
+
+
+def test_summary_page_renders(client):
+    assert client.get("/design/summary").status_code == 200
+
+
+def test_summary_page_has_no_external_requests(client):
+    html = client.get("/design/summary").get_data(as_text=True)
+    for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com", "Material+Symbols"):
+        assert forbidden not in html
+
+
+def test_summary_page_marks_the_confirm_step(client):
+    html = client.get("/design/summary").get_data(as_text=True)
+    assert 'aria-current="step"' in html
+    assert "Create my design" in html
+    assert "Keep editing" in html

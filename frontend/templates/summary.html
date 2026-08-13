@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Confirm your cake — {{ app_name }}{% endblock %}
+
+{# The gate before image generation (spec §8.3). Rendered from the Stitch
+   screen docs/design/screenshots/specification-summary.jpg. Every value and
+   every price line comes from the backend. #}
+
+{% block nav %}<a href="/design">Back to the conversation</a>{% endblock %}
+
+{% block progress %}
+<ol class="progress-steps">
+  <li>Describe</li>
+  <li aria-current="step">Confirm</li>
+  <li>Design</li>
+  <li>Order</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <h1>Please confirm your cake</h1>
+  <p>Review the specification below before we create your design.</p>
+
+  <p class="notice notice--error" data-error hidden role="alert"></p>
+
+  <div class="summary-layout">
+    <section class="card" aria-labelledby="spec-heading">
+      <h2 class="panel-heading" id="spec-heading">Specification</h2>
+      <dl class="spec-list spec-list--roomy" data-spec>
+        <div><dt>Loading…</dt><dd></dd></div>
+      </dl>
+    </section>
+
+    <aside class="summary-side">
+      <section class="card" aria-labelledby="price-heading">
+        <h2 class="panel-heading" id="price-heading">Price</h2>
+        <dl class="spec-list" data-breakdown></dl>
+        <p class="summary-total">
+          <span>Total</span>
+          <strong data-total>—</strong>
+        </p>
+        <p class="price-block__estimate" data-price-note hidden></p>
+      </section>
+
+      {# Stated plainly, never hidden in fine print, and never a medical
+         guarantee (spec §18). #}
+      <p class="notice" data-allergen></p>
+
+      <div data-blockers hidden>
+        <p class="notice notice--warning" data-blocker-text></p>
+      </div>
+
+      <button class="button button--primary button--block" type="button" data-confirm>
+        Create my design
+      </button>
+      <a class="button button--secondary button--block" href="/design">Keep editing</a>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/summary.js') }}"></script>
+{% endblock %}

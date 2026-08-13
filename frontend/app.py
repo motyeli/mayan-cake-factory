@@ -45,6 +45,11 @@ def create_app() -> Flask:
     def home():
         return render_template("home.html")
 
+    @app.get("/design/summary")
+    def design_summary():
+        """The confirmation gate before image generation."""
+        return render_template("summary.html")
+
     @app.get("/design")
     def design():
         """The AI design conversation. The session token is held in the

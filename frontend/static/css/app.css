@@ -426,3 +426,35 @@ main { display: block; }
   h1 { font-size: var(--text-3xl); }
   .progress-steps { gap: var(--space-4); overflow-x: auto; justify-content: flex-start; }
 }
+
+/* -------------------------------------------------- specification summary */
+
+.summary-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(18rem, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.spec-list--roomy > div { padding: var(--space-3) 0; }
+
+.summary-side { display: grid; gap: var(--space-4); position: sticky; top: var(--space-4); }
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-lg);
+}
+.summary-total strong {
+  font-family: var(--font-headline);
+  font-size: var(--text-2xl);
+}
+
+@media (max-width: 60rem) {
+  .summary-layout { grid-template-columns: 1fr; }
+  .summary-side { position: static; }
+}
