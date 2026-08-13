@@ -194,3 +194,45 @@ def test_confirmation_has_the_return_link_control(client):
     html = client.get("/orders/MCF-1").get_data(as_text=True)
     assert 'for="order-link"' in html
     assert "Keep your order link" in html
+
+
+# ------------------------------------------------------------------- admin
+
+def test_admin_login_renders(client):
+    assert client.get("/admin/login").status_code == 200
+
+
+def test_admin_login_has_labelled_fields(client):
+    html = client.get("/admin/login").get_data(as_text=True)
+    assert 'for="email"' in html and 'for="password"' in html
+    assert 'autocomplete="current-password"' in html
+    assert 'role="alert"' in html          # failures are announced
+
+
+def test_admin_dashboard_renders(client):
+    assert client.get("/admin").status_code == 200
+
+
+def test_dashboard_keeps_the_four_money_figures_separate(client):
+    """Spec section 32. Nothing has been paid in this MVP, so presenting order
+    value as revenue would simply be false."""
+    html = client.get("/admin").get_data(as_text=True)
+    for hook in ("data-money-confirmed", "data-money-paid",
+                 "data-money-outstanding", "data-money-estimated"):
+        assert hook in html
+    assert "Not revenue until paid" in html
+    assert "Not yet collected" in html
+    # No combined total anywhere.
+    assert "Total revenue" not in html
+    assert "data-money-total" not in html
+
+
+def test_admin_nav_marks_the_current_page(client):
+    assert 'aria-current="page"' in client.get("/admin").get_data(as_text=True)
+
+
+def test_admin_pages_have_no_external_requests(client):
+    for path in ("/admin/login", "/admin"):
+        html = client.get(path).get_data(as_text=True)
+        for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com"):
+            assert forbidden not in html

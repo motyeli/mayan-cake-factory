@@ -67,6 +67,14 @@ def create_app() -> Flask:
         browser's sessionStorage, so this route needs no state of its own."""
         return render_template("design.html")
 
+    @app.get("/admin/login")
+    def admin_login():
+        return render_template("admin_login.html")
+
+    @app.get("/admin")
+    def admin_dashboard():
+        return render_template("admin_dashboard.html")
+
     @app.get("/healthz")
     def healthz():
         return {"status": "ok", "service": "frontend", "environment": app.config["APP_ENV"]}

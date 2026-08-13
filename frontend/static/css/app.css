@@ -659,3 +659,143 @@ main { display: block; }
 @media (max-width: 60rem) {
   .confirmation-layout { grid-template-columns: 1fr; }
 }
+
+/* ============================================================== admin area */
+
+.admin-body { background: var(--color-surface-sunken); }
+
+.admin-shell { display: grid; grid-template-columns: 15rem minmax(0, 1fr); min-height: 100vh; }
+
+.admin-sidebar {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: var(--space-5) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.admin-sidebar__foot { margin-top: auto; }
+
+.admin-nav { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+.admin-nav a {
+  display: block;
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius);
+  color: var(--color-ink);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  min-height: var(--touch-min);
+}
+.admin-nav a:hover { background: var(--color-surface-sunken); }
+.admin-nav a[aria-current="page"] {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-weight: var(--weight-medium);
+}
+
+.admin-main { padding: var(--space-6) var(--space-6); max-width: 78rem; }
+.admin-main h1 { font-size: var(--text-3xl); }
+
+.admin-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+/* ------------------------------------------------------------------ tiles */
+
+.tile-row, .money-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-5);
+}
+.tile, .money-row li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-1);
+}
+.money-row { margin: 0; }
+.tile__label {
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.tile strong, .money-row strong {
+  font-family: var(--font-headline);
+  font-size: var(--text-2xl);
+  line-height: 1.1;
+}
+.tile strong small { font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-ink-muted); }
+
+/* Outstanding money is the figure most easily mistaken for revenue, so it is
+   marked visually as owed rather than earned. */
+.money-row__outstanding { border-color: var(--color-warning); }
+.money-row__outstanding strong { color: var(--color-warning); }
+
+.meter {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+.meter__fill { height: 100%; background: var(--color-primary); transition: width 200ms ease; }
+.meter__fill.is-full { background: var(--color-error); }
+
+/* --------------------------------------------------------------- listings */
+
+.load-list, .approval-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); }
+.load-list li { display: grid; grid-template-columns: 6.5rem 1fr 5.5rem; gap: var(--space-3); align-items: center; }
+.load-list__date { font-size: var(--text-sm); }
+.load-list__count { font-size: var(--text-xs); color: var(--color-ink-muted); text-align: right; }
+
+.approval-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+.approval-list li:last-child { border-bottom: 0; }
+
+.badge {
+  font-size: var(--text-xs);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-warning-tint);
+  color: var(--color-warning);
+  border: 1px solid currentColor;
+}
+
+/* ------------------------------------------------------------------- auth */
+
+.auth-page { display: grid; place-items: center; min-height: 70vh; padding: var(--space-5); }
+.auth-card {
+  width: 100%;
+  max-width: 26rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-7) var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+.auth-title { font-size: var(--text-2xl); text-align: center; margin-bottom: var(--space-6); }
+.auth-footnote { text-align: center; margin: var(--space-4) 0 0; }
+
+@media (max-width: 60rem) {
+  .admin-shell { grid-template-columns: 1fr; }
+  .admin-sidebar { position: static; height: auto; }
+  .admin-nav { grid-auto-flow: column; overflow-x: auto; }
+  .admin-main { padding: var(--space-5) var(--space-4); }
+}

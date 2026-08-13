@@ -1,0 +1,79 @@
+{% extends "admin_base.html" %}
+{% block title %}Dashboard — {{ app_name }}{% endblock %}
+{% set active_nav = 'dashboard' %}
+
+{% block admin_content %}
+<h1>Today at the atelier</h1>
+
+<p class="notice notice--error" data-error hidden role="alert"></p>
+
+<ul class="tile-row">
+  <li class="tile"><span class="tile__label">Orders today</span><strong data-orders-today>—</strong></li>
+  <li class="tile"><span class="tile__label">Orders this week</span><strong data-orders-week>—</strong></li>
+  <li class="tile">
+    <span class="tile__label">Production points used</span>
+    <strong><span data-points-used>—</span> <small data-points-limit></small></strong>
+    <div class="meter"><div class="meter__fill" data-points-bar></div></div>
+  </li>
+  <li class="tile"><span class="tile__label">Awaiting approval</span><strong data-awaiting>—</strong></li>
+</ul>
+
+{# Spec §32: four separate figures. Nothing has actually been paid in this
+   MVP, so presenting order value as revenue would be simply false. #}
+<section class="card" aria-labelledby="money-heading">
+  <h2 class="panel-heading" id="money-heading">Financial snapshot</h2>
+  <ul class="money-row">
+    <li>
+      <span class="tile__label">Confirmed order value</span>
+      <strong data-money-confirmed>—</strong>
+      <span class="helper-text">Not revenue until paid</span>
+    </li>
+    <li>
+      <span class="tile__label">Amount paid</span>
+      <strong data-money-paid>—</strong>
+      <span class="helper-text">Payment is arranged separately</span>
+    </li>
+    <li class="money-row__outstanding">
+      <span class="tile__label">Outstanding</span>
+      <strong data-money-outstanding>—</strong>
+      <span class="helper-text">Not yet collected</span>
+    </li>
+    <li>
+      <span class="tile__label">Estimated special orders</span>
+      <strong data-money-estimated>—</strong>
+      <span class="helper-text">Pending your approval</span>
+    </li>
+  </ul>
+</section>
+
+<div class="admin-columns">
+  <section class="card" aria-labelledby="load-heading">
+    <h2 class="panel-heading" id="load-heading">Production load, next 7 days</h2>
+    <ul class="load-list" data-load></ul>
+  </section>
+
+  <section class="card" aria-labelledby="approval-heading">
+    <h2 class="panel-heading" id="approval-heading">Orders awaiting your approval</h2>
+    <ul class="approval-list" data-approvals></ul>
+    <p class="helper-text" data-approvals-empty hidden>Nothing is waiting for you.</p>
+  </section>
+</div>
+
+<div class="admin-columns">
+  <section class="card" aria-labelledby="allergen-heading">
+    <h2 class="panel-heading" id="allergen-heading">Allergen warnings</h2>
+    <ul class="plain-list" data-allergens></ul>
+    <p class="helper-text" data-allergens-empty hidden>None on the books.</p>
+  </section>
+
+  <section class="card" aria-labelledby="rush-heading">
+    <h2 class="panel-heading" id="rush-heading">Rush orders</h2>
+    <ul class="plain-list" data-rush></ul>
+    <p class="helper-text" data-rush-empty hidden>None on the books.</p>
+  </section>
+</div>
+{% endblock %}
+
+{% block admin_scripts %}
+<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+{% endblock %}
