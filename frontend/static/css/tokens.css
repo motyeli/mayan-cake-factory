@@ -1,0 +1,112 @@
+/* Design tokens — Maison Mayan, Parisian Patisserie
+ *
+ * Generated from the Stitch design system `assets/2131526806607800438`
+ * (project `2064497605592133162`). These values are NOT invented here: the
+ * palette, fonts and radius come from the design system Stitch produced and
+ * applied to the project. Screen layouts are a separate matter and are still
+ * pending — see docs/design/README.md.
+ *
+ * Change these in Stitch first, then mirror them here, so the design system
+ * stays the source of truth rather than drifting into CSS.
+ */
+
+:root {
+  /* --- brand ------------------------------------------------------- */
+  --color-primary:        #8C6239;  /* caramel — primary actions */
+  --color-primary-hover:  #74512F;
+  --color-primary-tint:   #F3EAE0;  /* customer chat bubbles, soft panels */
+  --color-secondary:      #C9A227;  /* antique gold — dividers, price emphasis */
+  --color-tertiary:       #C98B84;  /* soft rose — decorative accents only */
+
+  /* --- surfaces ---------------------------------------------------- */
+  --color-paper:          #FDFBF8;  /* page background */
+  --color-surface:        #FFFFFF;  /* cards */
+  --color-surface-sunken: #F7F2EA;  /* tinted bands */
+  --color-border:         #E7DED2;
+
+  /* --- text --------------------------------------------------------
+   * Warm brown, never pure black. Muted is the lightest tone still
+   * passing WCAG AA on --color-paper; do not lighten it further.       */
+  --color-ink:            #2C2320;
+  --color-ink-muted:      #6B5B4F;
+  --color-ink-inverse:    #FFFFFF;
+
+  /* --- semantic ----------------------------------------------------- */
+  --color-success:        #2F6B4F;
+  --color-warning:        #9A6B18;
+  --color-error:          #A3312A;
+  --color-error-tint:     #FBEFEE;
+  --color-warning-tint:   #FBF4E5;
+
+  --color-focus:          #1F6FEB;  /* deliberately outside the brand palette
+                                       so focus is unmistakable */
+
+  /* --- type ---------------------------------------------------------
+   * ponytail: system fallbacks rather than a webfont CDN. Loading Google
+   * Fonts from a CDN sends visitor IPs to a third party, which is a live
+   * GDPR problem for a French business (spec section 44). Self-hosting
+   * Playfair Display and DM Sans is the fix — tracked for Phase 8.        */
+  --font-headline: "Playfair Display", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --text-xs:   0.8125rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.375rem;
+  --text-2xl:  1.75rem;
+  --text-3xl:  2.25rem;
+  --text-4xl:  3rem;
+
+  --leading-tight:  1.2;
+  --leading-normal: 1.6;
+
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-bold:    700;
+
+  /* --- spacing (4px base) -------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* --- shape and depth ----------------------------------------------- */
+  --radius:       8px;   /* ROUND_EIGHT from the design system */
+  --radius-sm:    4px;
+  --radius-lg:    12px;
+
+  --shadow-sm: 0 1px 2px rgba(44, 35, 32, 0.06);
+  --shadow-md: 0 2px 8px rgba(44, 35, 32, 0.08);
+  --shadow-lg: 0 8px 24px rgba(44, 35, 32, 0.10);
+
+  /* --- layout --------------------------------------------------------- */
+  --measure:     65ch;    /* readable line length */
+  --page-max:    72rem;
+  --touch-min:   44px;    /* minimum interactive target */
+}
+
+/* The design system is light-mode by construction (a patisserie should look
+ * like paper). Respect a dark-mode preference only by softening the paper
+ * white, rather than inverting into an aesthetic the brand is not. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper:   #F6F1EA;
+    --color-surface: #FFFFFF;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

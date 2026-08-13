@@ -1,0 +1,107 @@
+{% extends "admin_base.html" %}
+{% block title %}Orders — {{ app_name }}{% endblock %}
+{% set active_nav = 'orders' %}
+
+{# Order list with the spec §33 filters. Extends the admin visual language
+   established by the Stitch dashboard: same sidebar, cards, badges and
+   tokens. #}
+
+{% block admin_content %}
+<h1>Orders</h1>
+
+<p class="notice notice--error" data-error hidden role="alert"></p>
+
+<form class="filter-bar" data-filters>
+  <div class="field">
+    <label for="f-status">Status</label>
+    <select id="f-status" name="status">
+      <option value="">Any status</option>
+      {% for value, label in [
+        ('awaiting_bakery_approval', 'Awaiting bakery approval'),
+        ('confirmed', 'Confirmed'),
+        ('in_production', 'In production'),
+        ('ready_for_pickup', 'Ready for pickup'),
+        ('out_for_delivery', 'Out for delivery'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')] %}
+      <option value="{{ value }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="f-method">Collection or delivery</label>
+    <select id="f-method" name="fulfillment_method">
+      <option value="">Either</option>
+      <option value="pickup">Collection</option>
+      <option value="delivery">Delivery</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="f-complexity">Complexity</label>
+    <select id="f-complexity" name="complexity_level">
+      <option value="">Any</option>
+      <option value="1">1 — Simple</option>
+      <option value="2">2 — Detailed</option>
+      <option value="3">3 — Premium</option>
+      <option value="4">4 — Special project</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="f-search">Search</label>
+    <input id="f-search" name="search" type="search"
+           placeholder="Order number, name, email or phone">
+  </div>
+
+  <fieldset class="filter-toggles">
+    <legend class="visually-hidden">Quick filters</legend>
+    <label><input type="checkbox" name="rush_only"> Rush only</label>
+    <label><input type="checkbox" name="allergen_only"> Allergen only</label>
+    <label><input type="checkbox" name="special_only"> Special orders</label>
+  </fieldset>
+
+  <div class="filter-bar__actions">
+    <button class="button button--primary" type="submit">Apply</button>
+    <button class="button button--secondary" type="button" data-clear>Clear</button>
+  </div>
+</form>
+
+<ul class="chip-row" data-active-filters></ul>
+
+<div class="card">
+  <table class="data-table">
+    <caption class="visually-hidden">Orders matching the current filters</caption>
+    <thead>
+      <tr>
+        <th scope="col">Order</th>
+        <th scope="col">Customer</th>
+        <th scope="col">Date</th>
+        <th scope="col">Method</th>
+        <th scope="col">Status</th>
+        <th scope="col">Complexity</th>
+        <th scope="col">Points</th>
+        <th scope="col" class="numeric">Total</th>
+        <th scope="col"><span class="visually-hidden">Warnings</span></th>
+      </tr>
+    </thead>
+    <tbody data-rows></tbody>
+  </table>
+
+  <p class="empty-state" data-empty hidden>
+    No orders match these filters.
+    <button class="button button--quiet" type="button" data-clear-2>Clear filters</button>
+  </p>
+
+  <div class="pagination">
+    <button class="button button--secondary" type="button" data-prev disabled>Previous</button>
+    <span data-showing></span>
+    <button class="button button--secondary" type="button" data-next disabled>Next</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block admin_scripts %}
+<script src="{{ url_for('static', filename='js/admin_orders.js') }}"></script>
+{% endblock %}

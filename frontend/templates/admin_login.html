@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Bakery sign in — {{ app_name }}{% endblock %}
+
+{# Staff sign-in, from the Stitch screen docs/design/screenshots/admin-login.jpg.
+
+   Credentials are posted to the backend, which performs the Supabase password
+   grant and returns a JWT. The browser never holds the anon key and never
+   talks to the auth service directly (AD-08). #}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <form class="auth-card" data-form novalidate>
+    <h1 class="auth-title">Bakery sign in</h1>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="username"
+             required aria-describedby="form-error">
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password"
+             autocomplete="current-password" required aria-describedby="form-error">
+    </div>
+
+    <button class="button button--primary button--block" type="submit" data-submit>
+      Sign in
+    </button>
+
+    {# role="alert" so a screen reader announces the failure without the user
+       having to go looking for it. #}
+    <p class="field__error" id="form-error" data-error hidden role="alert"></p>
+
+    <p class="helper-text auth-footnote">This area is for bakery staff.</p>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  admin.mountLogin();
+</script>
+{% endblock %}

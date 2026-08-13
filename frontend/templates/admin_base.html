@@ -1,0 +1,64 @@
+{# Admin shell: sidebar, staff identity, sign out.
+
+   The sidebar is a real <nav> with aria-current on the active item, so the
+   admin area is navigable by keyboard and screen reader like the customer
+   pages. #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Admin — {{ app_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body data-backend-url="{{ backend_url }}" data-env="{{ app_env }}" class="admin-body">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <a class="brand" href="/admin">
+        Maison Mayan
+        <small>Atelier admin</small>
+      </a>
+
+      <nav aria-label="Admin sections">
+        <ul class="admin-nav">
+          {% for item in [
+            ('dashboard', '/admin', 'Dashboard'),
+            ('orders', '/admin/orders', 'Orders'),
+            ('availability', '/admin/availability', 'Availability'),
+            ('catalog', '/admin/catalog', 'Catalog'),
+            ('customers', '/admin/customers', 'Customers'),
+            ('settings', '/admin/settings', 'Settings')
+          ] %}
+          <li>
+            <a href="{{ item[1] }}"
+               {% if active_nav == item[0] %}aria-current="page"{% endif %}>{{ item[2] }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      <div class="admin-sidebar__foot">
+        <p class="helper-text" data-who></p>
+        <button class="button button--quiet" type="button" onclick="admin.signOut()">Sign out</button>
+      </div>
+    </aside>
+
+    <main id="main" class="admin-main">
+      {% block admin_content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+  <script>
+    if (admin.requireSession()) {
+      var me = admin.who();
+      var el = document.querySelector('[data-who]');
+      if (el && me.full_name) el.textContent = me.full_name + ' · ' + (me.role || 'staff');
+    }
+  </script>
+  {% block admin_scripts %}{% endblock %}
+</body>
+</html>

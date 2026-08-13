@@ -1,0 +1,277 @@
+"""Frontend service tests: routing, template rendering and accessibility basics.
+
+The accessibility assertions are on rendered HTML. That catches the failures
+that actually recur (missing landmarks, unlabelled inputs, no skip link); it
+is not a substitute for a real audit, and the README says so.
+"""
+
+import pytest
+from app import create_app
+
+
+@pytest.fixture
+def client():
+    app = create_app()
+    app.config.update(TESTING=True)
+    return app.test_client()
+
+
+def test_healthz(client):
+    body = client.get("/healthz").get_json()
+    assert body["status"] == "ok"
+    assert body["service"] == "frontend"
+
+
+def test_home_renders(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert b"Design Your Cake" in response.data
+
+
+def test_backend_url_is_injected_not_hardcoded(client):
+    html = client.get("/").get_data(as_text=True)
+    assert 'data-backend-url="http://localhost:8001"' in html
+
+
+def test_no_secrets_reach_the_page(client):
+    html = client.get("/").get_data(as_text=True).lower()
+    for marker in ("service_role", "sb_secret", "apikey", "secret_key", "eyj"):
+        assert marker not in html, f"{marker} appeared in delivered HTML"
+
+
+def test_security_headers(client):
+    headers = client.get("/").headers
+    assert headers["X-Content-Type-Options"] == "nosniff"
+    assert headers["X-Frame-Options"] == "DENY"
+
+
+@pytest.mark.parametrize("fragment", [
+    '<html lang="en">',      # language declared for screen readers
+    'class="skip-link"',     # keyboard users can bypass the header
+    "<main id=\"main\">",    # single main landmark
+    'aria-label="Primary"',  # nav is identifiable
+    'role="status"',         # async loading is announced
+])
+def test_accessibility_basics(client, fragment):
+    assert fragment in client.get("/").get_data(as_text=True)
+
+
+# ------------------------------------------------------------ design screen
+
+def test_design_page_renders(client):
+    assert client.get("/design").status_code == 200
+
+
+def test_design_page_has_no_external_requests(client):
+    """Stitch emits a Tailwind CDN script and a Google Fonts link. Neither can
+    ship: section 37 rules out frontend frameworks, and the fonts CDN sends
+    visitor IPs to a third party, which is a GDPR problem for a French
+    business (AD-12)."""
+    html = client.get("/design").get_data(as_text=True)
+    for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com",
+                      "fonts.gstatic.com", "Material+Symbols"):
+        assert forbidden not in html, f"{forbidden} would be requested from the page"
+
+
+def test_home_page_has_no_external_requests(client):
+    html = client.get("/").get_data(as_text=True)
+    for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com"):
+        assert forbidden not in html
+
+
+@pytest.mark.parametrize("fragment", [
+    'role="log"',              # the conversation is announced to screen readers
+    'aria-live="polite"',      # ...without stealing focus from the input
+    'class="visually-hidden" for="message"',   # the textarea has a real label
+    'aria-current="step"',     # progress indicator marks where you are
+    'data-backend-url',        # API base injected, never hard-coded in JS
+])
+def test_design_page_accessibility_and_wiring(client, fragment):
+    assert fragment in client.get("/design").get_data(as_text=True)
+
+
+def test_icon_buttons_have_accessible_names(client):
+    """Icon-only buttons are invisible to screen readers without a label."""
+    html = client.get("/design").get_data(as_text=True)
+    assert "Send message" in html
+    assert "Attach an inspiration image" in html
+
+
+def test_summary_page_renders(client):
+    assert client.get("/design/summary").status_code == 200
+
+
+def test_summary_page_has_no_external_requests(client):
+    html = client.get("/design/summary").get_data(as_text=True)
+    for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com", "Material+Symbols"):
+        assert forbidden not in html
+
+
+def test_summary_page_marks_the_confirm_step(client):
+    html = client.get("/design/summary").get_data(as_text=True)
+    assert 'aria-current="step"' in html
+    assert "Create my design" in html
+    assert "Keep editing" in html
+
+
+# ------------------------------------------------------- home page content
+
+def test_home_page_states_no_business_facts_of_its_own():
+    """The generated design copy invented a two-week lead time, a 50% credit
+    card deposit and a 14-day refund policy — none of which this product has.
+    Every business fact must come from the catalog endpoint at runtime, so the
+    marketing page cannot contradict the rule engine."""
+    import pathlib
+
+    html = pathlib.Path("templates/home.html").read_text(encoding="utf-8")
+    for invented in ("2 weeks", "two weeks", "50% deposit", "credit card",
+                     "14 days", "Rue Royale", "tasting", "4-6 weeks"):
+        assert invented.lower() not in html.lower(), (
+            f"'{invented}' is hard-coded in the template instead of coming from settings"
+        )
+
+
+def test_home_page_has_hooks_for_settings_driven_copy(client):
+    html = client.get("/").get_data(as_text=True)
+    for hook in ("data-lead-time", "data-allergen", "data-payment",
+                 "data-cancellation", "data-visual-disclaimer", "data-zones"):
+        assert hook in html
+
+
+def test_hero_image_has_meaningful_alt_text(client):
+    html = client.get("/").get_data(as_text=True)
+    assert "buttercream" in html and "alt=" in html
+
+
+# ----------------------------------------------------------- design preview
+
+def test_preview_page_renders(client):
+    assert client.get("/design/preview").status_code == 200
+
+
+def test_preview_shows_staged_progress_not_a_bare_spinner(client):
+    """Generation takes about a minute with a real provider. Spec section 51
+    requires a clear progress state, not a frozen screen."""
+    html = client.get("/design/preview").get_data(as_text=True)
+    assert 'role="status"' in html
+    assert 'aria-live="polite"' in html
+    assert "about a minute" in html
+
+
+def test_preview_has_revision_and_approval_controls(client):
+    html = client.get("/design/preview").get_data(as_text=True)
+    assert "Request this change" in html
+    assert "Approve this design" in html
+    assert 'for="revision"' in html          # the textarea has a real label
+
+
+def test_preview_page_has_no_external_requests(client):
+    html = client.get("/design/preview").get_data(as_text=True)
+    for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com", "Material+Symbols"):
+        assert forbidden not in html
+
+
+# ------------------------------------------------------ order confirmation
+
+def test_confirmation_page_renders_with_an_order_number(client):
+    response = client.get("/orders/MCF-20260913-01001")
+    assert response.status_code == 200
+    assert "MCF-20260913-01001" in response.get_data(as_text=True)
+
+
+def test_confirmation_states_no_status_of_its_own(client):
+    """Status wording comes from the backend. A page that hard-coded
+    'confirmed' would keep saying so after the bakery rejected the order."""
+    import pathlib
+
+    html = pathlib.Path("templates/confirmation.html").read_text(encoding="utf-8")
+    assert "data-status" in html
+    # The only status word in the markup is the default heading, replaced at runtime.
+    assert "Awaiting bakery approval" not in html
+
+
+def test_confirmation_has_the_return_link_control(client):
+    html = client.get("/orders/MCF-1").get_data(as_text=True)
+    assert 'for="order-link"' in html
+    assert "Keep your order link" in html
+
+
+# ------------------------------------------------------------------- admin
+
+def test_admin_login_renders(client):
+    assert client.get("/admin/login").status_code == 200
+
+
+def test_admin_login_has_labelled_fields(client):
+    html = client.get("/admin/login").get_data(as_text=True)
+    assert 'for="email"' in html and 'for="password"' in html
+    assert 'autocomplete="current-password"' in html
+    assert 'role="alert"' in html          # failures are announced
+
+
+def test_admin_dashboard_renders(client):
+    assert client.get("/admin").status_code == 200
+
+
+def test_dashboard_keeps_the_four_money_figures_separate(client):
+    """Spec section 32. Nothing has been paid in this MVP, so presenting order
+    value as revenue would simply be false."""
+    html = client.get("/admin").get_data(as_text=True)
+    for hook in ("data-money-confirmed", "data-money-paid",
+                 "data-money-outstanding", "data-money-estimated"):
+        assert hook in html
+    assert "Not revenue until paid" in html
+    assert "Not yet collected" in html
+    # No combined total anywhere.
+    assert "Total revenue" not in html
+    assert "data-money-total" not in html
+
+
+def test_admin_nav_marks_the_current_page(client):
+    assert 'aria-current="page"' in client.get("/admin").get_data(as_text=True)
+
+
+def test_admin_pages_have_no_external_requests(client):
+    for path in ("/admin/login", "/admin"):
+        html = client.get(path).get_data(as_text=True)
+        for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com"):
+            assert forbidden not in html
+
+
+def test_admin_orders_list_renders(client):
+    assert client.get("/admin/orders").status_code == 200
+
+
+def test_order_list_has_the_section_33_filters(client):
+    html = client.get("/admin/orders").get_data(as_text=True)
+    for control in ('id="f-status"', 'id="f-method"', 'id="f-complexity"',
+                    'id="f-search"', 'name="rush_only"', 'name="allergen_only"',
+                    'name="special_only"'):
+        assert control in html
+
+
+def test_order_table_is_a_real_table_with_headers(client):
+    """A grid of divs is invisible to a screen reader."""
+    html = client.get("/admin/orders").get_data(as_text=True)
+    assert "<table" in html and 'scope="col"' in html
+    assert "<caption" in html
+
+
+def test_order_list_has_an_empty_state(client):
+    assert "No orders match these filters" in client.get("/admin/orders").get_data(as_text=True)
+
+
+def test_admin_order_detail_renders(client):
+    assert client.get("/admin/orders/abc-123").status_code == 200
+
+
+def test_price_override_marks_the_reason_required(client):
+    """Spec section 34: an override records why it happened."""
+    html = client.get("/admin/orders/abc-123").get_data(as_text=True)
+    assert "Reason (required)" in html
+    assert 'for="override-reason"' in html
+
+
+def test_order_detail_shows_history_and_audit(client):
+    html = client.get("/admin/orders/abc-123").get_data(as_text=True)
+    assert "data-history" in html and "data-audit" in html

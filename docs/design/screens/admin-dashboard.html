@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Maison Mayan - Atelier Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&amp;family=Playfair+Display:wght@400;600;700&amp;family=Public+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .text-accent { color: #C9A227; }
+        .bg-accent { background-color: #C9A227; }
+        .text-error { color: #A3312A; }
+        .bg-error { background-color: #A3312A; }
+        .text-warning { color: #9A6B18; }
+        .bg-warning { background-color: #9A6B18; }
+        .text-success { color: #2F6B4F; }
+        .bg-success { background-color: #2F6B4F; }
+        
+        .shadow-soft {
+            box-shadow: 0 4px 6px -1px rgba(44, 35, 32, 0.05), 0 2px 4px -1px rgba(44, 35, 32, 0.03);
+        }
+        
+        body {
+            background-color: #FDFBF8;
+            color: #2C2320;
+            font-family: 'DM Sans', sans-serif;
+        }
+        
+        h1, h2, h3, .font-headline {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .border-base {
+            border-color: #E7DED2;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#8C6239',
+                            light: '#a67d54',
+                            dark: '#73502d'
+                        },
+                        base: {
+                            DEFAULT: '#FDFBF8',
+                            dark: '#2C2320'
+                        },
+                        ink: {
+                            DEFAULT: '#2C2320',
+                            light: '#5e4e48'
+                        },
+                        border: '#E7DED2',
+                        accent: '#C9A227',
+                        rose: '#C98B84',
+                        success: '#2F6B4F',
+                        warning: '#9A6B18',
+                        error: '#A3312A'
+                    },
+                    fontFamily: {
+                        headline: ["Playfair Display", "serif"],
+                        display: ["Playfair Display", "serif"],
+                        body: ["DM Sans", "sans-serif"],
+                        label: ["DM Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "8px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="flex h-screen overflow-hidden text-ink antialiased">
+<!-- SideNavBar (from JSON) -->
+<nav class="bg-[#FDFBF8] dark:bg-[#2C2320] text-[#8C6239] dark:text-[#E7DED2] font-body text-sm h-screen w-64 left-0 sticky border-r border-[#E7DED2] no-shadow flex flex-col h-full p-4 gap-2 z-10 shrink-0">
+<div class="mb-8 mt-2 px-2">
+<h1 class="font-headline text-lg text-[#2C2320] font-bold">Atelier Admin</h1>
+<p class="text-ink-light text-xs mt-1">Parisian Patisserie</p>
+</div>
+<button class="w-full bg-primary text-white py-2.5 px-4 rounded-lg font-medium flex items-center justify-center gap-2 mb-6 hover:bg-primary-dark transition-colors focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Order
+        </button>
+<div class="flex-1 flex flex-col gap-1">
+<a class="bg-[#E7DED2] text-[#8C6239] font-medium rounded-lg flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-[#2C2320] hover:bg-[#E7DED2] rounded-lg transition-all flex items-center gap-3 px-3 py-2 cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">list_alt</span>
+<span>Orders</span>
+</a>
+<a class="text-[#2C2320] hover:bg-[#E7DED2] rounded-lg transition-all flex items-center gap-3 px-3 py-2 cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">cookie</span>
+<span>Production</span>
+</a>
+<a class="text-[#2C2320] hover:bg-[#E7DED2] rounded-lg transition-all flex items-center gap-3 px-3 py-2 cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span>Finance</span>
+</a>
+<a class="text-[#2C2320] hover:bg-[#E7DED2] rounded-lg transition-all flex items-center gap-3 px-3 py-2 cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">inventory_2</span>
+<span>Inventory</span>
+</a>
+</div>
+<div class="border-t border-border pt-4 mt-auto flex flex-col gap-1">
+<a class="text-[#2C2320] hover:bg-[#E7DED2] rounded-lg transition-all flex items-center gap-3 px-3 py-2 cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span>Support</span>
+</a>
+<a class="text-[#2C2320] hover:bg-[#E7DED2] rounded-lg transition-all flex items-center gap-3 px-3 py-2 cursor-pointer active:scale-95 duration-150 text-error" href="#">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+<span>Allergen Alerts</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-base relative">
+<!-- TopNavBar (from JSON) -->
+<header class="bg-[#FDFBF8] dark:bg-[#2C2320] text-[#8C6239] dark:text-[#E7DED2] font-display text-[#2C2320] dark:text-[#FDFBF8] w-full top-0 sticky border-b border-[#E7DED2] shadow-sm flex justify-between items-center px-8 py-4 w-full z-20">
+<div class="flex items-center gap-6 w-1/3">
+<h2 class="text-xl font-headline font-bold text-[#8C6239]">Maison Mayan Admin</h2>
+</div>
+<div class="w-1/3 flex justify-center">
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-ink-light text-sm">search</span>
+<input class="w-full bg-white border border-border rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Search orders, clients..." type="text"/>
+</div>
+</div>
+<div class="flex items-center justify-end gap-4 w-1/3 text-[#2C2320]">
+<button class="p-2 rounded-full hover:bg-[#E7DED2] transition-colors cursor-pointer active:opacity-80 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 rounded-full hover:bg-[#E7DED2] transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-border flex items-center justify-center overflow-hidden border border-border ml-2 cursor-pointer">
+<span class="material-symbols-outlined text-ink-light">person</span>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-7xl mx-auto space-y-8 pb-12">
+<!-- Page Title -->
+<div class="flex justify-between items-end">
+<div>
+<p class="text-ink-light text-sm mb-1 uppercase tracking-wider font-medium">Overview</p>
+<h1 class="text-3xl font-headline font-bold text-ink">Today's Atelier Status</h1>
+</div>
+<div class="text-sm text-ink-light">
+<span class="font-medium text-ink">Date:</span> Oct 24, 2024
+                    </div>
+</div>
+<!-- 1. Top Summary Tiles (4 across) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<!-- Orders Today -->
+<div class="bg-white p-5 rounded-lg border border-border shadow-soft flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-ink-light text-sm font-medium">Orders today</span>
+<span class="material-symbols-outlined text-primary text-xl">calendar_today</span>
+</div>
+<div class="text-4xl font-headline font-semibold text-ink">4</div>
+</div>
+<!-- Orders This Week -->
+<div class="bg-white p-5 rounded-lg border border-border shadow-soft flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-ink-light text-sm font-medium">Orders this week</span>
+<span class="material-symbols-outlined text-primary text-xl">date_range</span>
+</div>
+<div class="text-4xl font-headline font-semibold text-ink">19</div>
+</div>
+<!-- Production Points -->
+<div class="bg-white p-5 rounded-lg border border-border shadow-soft flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-ink-light text-sm font-medium">Production points used</span>
+<span class="material-symbols-outlined text-primary text-xl">cookie</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-3xl font-headline font-semibold text-ink">7</span>
+<span class="text-ink-light text-sm">of 10</span>
+</div>
+<div class="w-full bg-border h-1.5 rounded-full overflow-hidden">
+<div class="bg-warning h-full rounded-full" style="width: 70%;"></div>
+</div>
+</div>
+</div>
+<!-- Awaiting Approval -->
+<div class="bg-white p-5 rounded-lg border border-border shadow-soft flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-ink-light text-sm font-medium">Awaiting approval</span>
+<span class="material-symbols-outlined text-accent text-xl">pending_actions</span>
+</div>
+<div class="text-4xl font-headline font-semibold text-ink">3</div>
+</div>
+</div>
+<!-- 2. Money Panel -->
+<div class="bg-white rounded-lg border border-border shadow-soft p-6">
+<h3 class="font-headline text-lg font-semibold mb-6 border-b border-border pb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+                        Financial Snapshot
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-border">
+<div class="md:pr-6 py-2 md:py-0">
+<p class="text-ink-light text-sm mb-1">Confirmed order value</p>
+<p class="text-2xl font-headline text-ink">$4,820</p>
+</div>
+<div class="md:px-6 py-2 md:py-0">
+<p class="text-ink-light text-sm mb-1">Amount paid</p>
+<p class="text-2xl font-headline text-success">$0</p>
+</div>
+<!-- Critical separation for outstanding -->
+<div class="md:px-6 py-2 md:py-0 bg-rose/10 -m-4 p-4 md:-my-2 md:py-2 md:mx-0 rounded-lg md:rounded-none md:bg-transparent">
+<div class="flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-error text-[16px]">warning</span>
+<p class="text-error font-medium text-sm">Outstanding</p>
+</div>
+<p class="text-2xl font-headline text-error font-bold">$4,820</p>
+<p class="text-xs text-ink-light mt-1">Not yet collected</p>
+</div>
+<div class="md:pl-6 py-2 md:py-0">
+<p class="text-ink-light text-sm mb-1">Est. special-order value</p>
+<p class="text-2xl font-headline text-ink-light italic text-accent">$2,300</p>
+<p class="text-xs text-ink-light mt-1">Pending approval</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Main Area: Production & Orders -->
+<div class="lg:col-span-2 space-y-8">
+<!-- 3. Production Load -->
+<div class="bg-white p-6 rounded-lg border border-border shadow-soft">
+<h3 class="font-headline text-lg font-semibold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">bar_chart</span>
+                                7-Day Production Load
+                            </h3>
+<div class="space-y-4">
+<!-- Day 1 -->
+<div class="flex items-center gap-4">
+<div class="w-16 text-sm font-medium text-ink">Today</div>
+<div class="flex-1 bg-border h-3 rounded-full overflow-hidden">
+<div class="bg-warning h-full rounded-full" style="width: 70%;"></div>
+</div>
+<div class="w-12 text-right text-sm text-ink-light">7/10</div>
+</div>
+<!-- Day 2 (Full) -->
+<div class="flex items-center gap-4">
+<div class="w-16 text-sm font-medium text-ink">Tomorrow</div>
+<div class="flex-1 bg-border h-3 rounded-full overflow-hidden relative">
+<div class="bg-error h-full rounded-full" style="width: 100%;"></div>
+</div>
+<div class="w-12 text-right text-sm font-bold text-error">Full</div>
+</div>
+<!-- Day 3 -->
+<div class="flex items-center gap-4">
+<div class="w-16 text-sm font-medium text-ink">Wed</div>
+<div class="flex-1 bg-border h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 40%;"></div>
+</div>
+<div class="w-12 text-right text-sm text-ink-light">4/10</div>
+</div>
+<!-- Day 4 -->
+<div class="flex items-center gap-4">
+<div class="w-16 text-sm font-medium text-ink">Thu</div>
+<div class="flex-1 bg-border h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 20%;"></div>
+</div>
+<div class="w-12 text-right text-sm text-ink-light">2/10</div>
+</div>
+<!-- Day 5 -->
+<div class="flex items-center gap-4">
+<div class="w-16 text-sm font-medium text-ink">Fri</div>
+<div class="flex-1 bg-border h-3 rounded-full overflow-hidden">
+<div class="bg-warning h-full rounded-full" style="width: 80%;"></div>
+</div>
+<div class="w-12 text-right text-sm text-ink-light">8/10</div>
+</div>
+</div>
+</div>
+<!-- 4. Order Queue -->
+<div>
+<h3 class="font-headline text-lg font-semibold mb-4 text-ink">Orders Awaiting Approval</h3>
+<div class="space-y-3">
+<!-- Order Item 1 -->
+<div class="bg-white p-4 rounded-lg border border-border shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-primary transition-colors cursor-pointer">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-headline font-semibold text-ink">#ORD-4092</span>
+<span class="text-sm text-ink-light">— M. Dupont</span>
+</div>
+<div class="text-sm text-ink-light">Due: Oct 28</div>
+</div>
+<div class="flex flex-wrap gap-2 items-center">
+<span class="px-2.5 py-1 bg-base text-ink text-xs rounded border border-border">Three-tier</span>
+<span class="px-2.5 py-1 bg-error/10 text-error text-xs rounded border border-error/20 font-medium">Rush order</span>
+<span class="px-2.5 py-1 bg-accent/10 text-accent text-xs rounded border border-accent/20">Above $1,500</span>
+<button class="ml-2 text-primary hover:text-primary-dark font-medium text-sm px-3 py-1 border border-primary rounded hover:bg-primary hover:text-white transition-colors">Review</button>
+</div>
+</div>
+<!-- Order Item 2 -->
+<div class="bg-white p-4 rounded-lg border border-border shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-primary transition-colors cursor-pointer">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-headline font-semibold text-ink">#ORD-4095</span>
+<span class="text-sm text-ink-light">— E. Laurent</span>
+</div>
+<div class="text-sm text-ink-light">Due: Nov 02</div>
+</div>
+<div class="flex flex-wrap gap-2 items-center">
+<span class="px-2.5 py-1 bg-base text-ink text-xs rounded border border-border">Sculpted</span>
+<button class="ml-2 text-primary hover:text-primary-dark font-medium text-sm px-3 py-1 border border-primary rounded hover:bg-primary hover:text-white transition-colors">Review</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. Side Panel -->
+<div class="space-y-6">
+<!-- Allergen Warnings -->
+<div class="bg-white rounded-lg border border-error/30 shadow-soft overflow-hidden">
+<div class="bg-error/5 p-4 border-b border-error/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[20px]">warning</span>
+<h3 class="font-headline font-semibold text-error">Active Allergen Warnings</h3>
+</div>
+<div class="p-0 divide-y divide-border">
+<div class="p-4 flex items-start gap-3">
+<div class="w-2 h-2 rounded-full bg-error mt-1.5 shrink-0"></div>
+<div>
+<p class="text-sm font-medium text-ink">#ORD-4088 (Today)</p>
+<p class="text-sm text-ink-light mt-0.5">Strict nut allergy. Requires full station sanitization before prep.</p>
+</div>
+</div>
+<div class="p-4 flex items-start gap-3">
+<div class="w-2 h-2 rounded-full bg-warning mt-1.5 shrink-0"></div>
+<div>
+<p class="text-sm font-medium text-ink">#ORD-4091 (Wed)</p>
+<p class="text-sm text-ink-light mt-0.5">Gluten-free request. Use designated GF equipment.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Rush Orders -->
+<div class="bg-white rounded-lg border border-border shadow-soft overflow-hidden">
+<div class="bg-base p-4 border-b border-border flex items-center gap-2">
+<span class="material-symbols-outlined text-warning text-[20px]">timer</span>
+<h3 class="font-headline font-semibold text-ink">Rush Orders</h3>
+</div>
+<div class="p-0 divide-y divide-border">
+<div class="p-4 flex justify-between items-center">
+<div>
+<p class="text-sm font-medium text-ink">#ORD-4089</p>
+<p class="text-xs text-ink-light mt-0.5">Due in 4 hours</p>
+</div>
+<span class="px-2 py-1 bg-warning/10 text-warning text-xs rounded font-medium border border-warning/20">Urgent</span>
+</div>
+<div class="p-4 flex justify-between items-center">
+<div>
+<p class="text-sm font-medium text-ink">#ORD-4092</p>
+<p class="text-xs text-ink-light mt-0.5">Pending Approval</p>
+</div>
+<span class="px-2 py-1 bg-error/10 text-error text-xs rounded font-medium border border-error/20">48h Notice</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

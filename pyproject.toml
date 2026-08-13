@@ -1,0 +1,26 @@
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+exclude = [".venv", "supabase"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "C4", "SIM", "RUF"]
+ignore = [
+  "S101",  # assert is how the tests are written
+  "B008",  # FastAPI Depends() in defaults is the documented pattern
+]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/tests/*" = ["S105", "S106"]  # test fixtures contain fake tokens
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+# Backend only. The frontend is a separate deployable service with its own
+# pytest root (frontend/pytest.ini) — both define a module called `app`, so
+# putting them on one path would make `import app` ambiguous.
+testpaths = ["backend/tests"]
+pythonpath = ["backend"]
+markers = [
+  "integration: touches the remote development Supabase project (needs credentials)",
+]
+filterwarnings = ["ignore::DeprecationWarning"]

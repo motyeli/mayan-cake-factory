@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order_number or 'confirmation' }} — {{ app_name }}{% endblock %}
+
+{# Order confirmation (spec §8.6). Rendered from the Stitch order confirmation
+   screen. The order number, status and price all come from the backend; this
+   page states no policy of its own. #}
+
+{% block nav %}<a href="/">Home</a>{% endblock %}
+
+{% block progress %}
+<ol class="progress-steps">
+  <li>Describe</li>
+  <li>Confirm</li>
+  <li>Design</li>
+  <li aria-current="step">Order</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <p class="notice notice--error" data-error hidden role="alert"></p>
+
+  <div data-order hidden>
+    <header class="confirmation-header">
+      <p class="confirmation-status" data-status></p>
+      <h1 data-heading>Your order is confirmed</h1>
+      <p>
+        Your order number is
+        <strong class="order-number" data-order-number></strong>
+      </p>
+      <p class="helper-text" data-approval-note hidden></p>
+    </header>
+
+    <div class="confirmation-layout">
+      <section>
+        <img class="confirmation-image" data-image hidden alt="Your approved cake design">
+        <p class="helper-text" data-visual-disclaimer></p>
+
+        <h2 class="panel-heading">Your cake</h2>
+        <dl class="spec-list spec-list--roomy" data-spec></dl>
+      </section>
+
+      <aside class="confirmation-side">
+        <section class="card">
+          <h2 class="panel-heading">Collection or delivery</h2>
+          <dl class="spec-list" data-fulfilment></dl>
+        </section>
+
+        <section class="card">
+          <h2 class="panel-heading">Price</h2>
+          <dl class="spec-list" data-breakdown></dl>
+          <p class="summary-total"><span>Total</span><strong data-total>—</strong></p>
+          <p class="price-block__estimate" data-price-note hidden></p>
+        </section>
+
+        {# No payment is taken online, so the arrangement is stated plainly
+           rather than implied by a missing checkout step (spec §25). #}
+        <p class="notice" data-payment></p>
+
+        <section class="card">
+          <h2 class="card__title">Keep your order link</h2>
+          <p class="helper-text" data-link-note></p>
+          <div class="copy-row">
+            <label class="visually-hidden" for="order-link">Your order link</label>
+            <input id="order-link" type="text" readonly data-link>
+            <button class="button button--secondary" type="button" data-copy>Copy</button>
+          </div>
+        </section>
+
+        <p class="helper-text" data-cancellation></p>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/confirmation.js') }}"></script>
+{% endblock %}

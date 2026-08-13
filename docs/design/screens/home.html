@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mayan's Cake Factory | Bespoke Parisian Cakes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              offWhite: '#FDFBF8',
+              darkBrown: '#2C2320',
+              caramel: '#8C6239',
+              gold: '#C9A227',
+              caramelHover: '#73502d',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Public Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-fonts">
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@300;400;500&display=swap');
+    
+    body {
+      background-color: #FDFBF8;
+      color: #2C2320;
+    }
+    
+    .text-balance {
+      text-wrap: balance;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-brand-gold selection:text-white">
+<!-- BEGIN: Header -->
+<header class="sticky top-0 z-50 bg-brand-offWhite/90 backdrop-blur-sm border-b border-brand-darkBrown/10 px-4 sm:px-8 py-3">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<!-- Wordmark Logo -->
+<a class="block h-10 w-auto group focus:outline-none focus:ring-2 focus:ring-brand-caramel rounded" href="#">
+<img alt="Maison Mayan Parisian Patisserie" class="h-full w-auto object-contain scale-[1.8] origin-left mix-blend-multiply" src="https://lh3.googleusercontent.com/aida/AP1WRLuo_B8ZQApgu3Hv52hkbVCXSe-H0enDVkxlc4XEXLg5-6asc3pINUuG36ayKfp5d4Pr_Lil9jpXVN6c7WOSfIyz9kYRUintKkgNdaxyZFFgHNo1LYDJn_FyvdSKUJPgZUFcw89efbljtkUsiG5QHmkV3Anr6MndjBFzIA2De4Ait8-dJCBIbZepf6tVPeGD3XHJCfQ0triEyUYue_cB9S0seumyDSNktmyxIPUwjGmMmyxUwy8tA-otl5g"/>
+</a>
+<!-- CTA Button -->
+<a class="inline-flex items-center justify-center px-5 py-2 text-sm font-medium tracking-wide text-white bg-brand-caramel hover:bg-brand-caramelHover rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-caramel focus:ring-offset-brand-offWhite" href="#design">
+        Design Your Cake
+      </a>
+</div>
+</header>
+<!-- END: Header -->
+<main>
+<!-- BEGIN: Hero Section -->
+<section class="px-4 sm:px-8 pt-12 md:pt-20 pb-16 md:pb-32 overflow-hidden">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+<!-- Hero Text -->
+<div class="max-w-2xl">
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif text-brand-darkBrown leading-tight mb-6 text-balance">
+            Design your cake,<br/>from anywhere
+          </h1>
+<p class="text-lg sm:text-xl text-brand-darkBrown/80 mb-8 font-light leading-relaxed">
+            Describe the cake you imagine. We turn it into a real, priced, production-ready order from our Paris atelier.
+          </p>
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+<a class="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium tracking-wide text-white bg-brand-caramel hover:bg-brand-caramelHover rounded-md transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-caramel focus:ring-offset-brand-offWhite" href="#design">
+              Design Your Cake
+            </a>
+<p class="text-sm text-brand-darkBrown/60 font-light italic">
+              Free to design. No account needed.
+            </p>
+</div>
+</div>
+<!-- Hero Image -->
+<div class="relative w-full aspect-[4/5] lg:aspect-auto lg:h-[700px] rounded-2xl overflow-hidden shadow-2xl bg-brand-darkBrown/5 border border-brand-darkBrown/10">
+<img alt="Elegant bespoke cake with fresh flowers" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLu743Ab1VwUTNzmtgmj1qMmVX1_yunX7JhBjEqN7pgNffQ-xMsKMj6EkcPY6mWG2rERA02yXrmym8HzoKVlVFNf7FDeZgvpjDBGbwbbr2U_8Wbhnhgz4HrrqBaZPxiMv9fJMcod2e3dghLuvUaAIOc5K_cIBPvgCvFcbWWb3DoCPkJytyOp0hI8eCY0wT2gt4GANKeG035LifVrC2SSEW_xkT41Ro1bhV48pYNsfeE3d3x_5BYxjik2cA"/>
+</div>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: How It Works -->
+<section class="py-16 bg-white border-y border-brand-darkBrown/5 px-4 sm:px-8">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-center text-sm font-semibold tracking-widest uppercase text-brand-caramel mb-12">How it works</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x-0 md:divide-x divide-brand-darkBrown/10">
+<!-- Step 1 -->
+<div class="text-center px-4">
+<span class="block font-serif text-3xl text-brand-gold mb-3">1.</span>
+<h3 class="text-xl font-medium text-brand-darkBrown mb-2">Describe it</h3>
+<p class="text-sm text-brand-darkBrown/70 font-light">Share your vision, theme, and flavors.</p>
+</div>
+<!-- Step 2 -->
+<div class="text-center px-4">
+<span class="block font-serif text-3xl text-brand-gold mb-3">2.</span>
+<h3 class="text-xl font-medium text-brand-darkBrown mb-2">We shape it</h3>
+<p class="text-sm text-brand-darkBrown/70 font-light">Our digital atelier creates a precise visual preview.</p>
+</div>
+<!-- Step 3 -->
+<div class="text-center px-4">
+<span class="block font-serif text-3xl text-brand-gold mb-3">3.</span>
+<h3 class="text-xl font-medium text-brand-darkBrown mb-2">See it</h3>
+<p class="text-sm text-brand-darkBrown/70 font-light">Review your design and full price breakdown.</p>
+</div>
+<!-- Step 4 -->
+<div class="text-center px-4">
+<span class="block font-serif text-3xl text-brand-gold mb-3">4.</span>
+<h3 class="text-xl font-medium text-brand-darkBrown mb-2">Order it</h3>
+<p class="text-sm text-brand-darkBrown/70 font-light">Secure your date and we begin baking.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: How It Works -->
+<!-- BEGIN: Cake Style Gallery -->
+<section class="py-24 px-4 sm:px-8">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-3xl sm:text-4xl font-serif text-brand-darkBrown mb-4">Inspiration &amp; Styles</h2>
+<div class="w-16 h-px bg-brand-gold mx-auto"></div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="group relative overflow-hidden rounded-xl bg-brand-darkBrown/5 aspect-square border border-brand-darkBrown/10 flex flex-col justify-end p-6 cursor-pointer">
+<img alt="Minimalist Cake Style" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYkvtlJJyTqiz-Ul3Xn7hnJVbDIMB-Nqw_FIKZ7sqMN6YVck44Xkx4Q0ZtoHXPmj3fMlRimDlQZ169BTBKQz3OKYyYxfWuLswoDexq1Drg9QrO2JH4VefXsYbqrWsMxwYBp7ELN2I6cyRGWH5lrTe9D48-X6S4lSlKGblvPnxd3d_Y-FStG47cVtg5_hznkmAhArMtZh53J_Wdg_UgkMzId7SpmT6HApM9eQaQT_mrv9T2UNHfzpTTR6YQjvfvx5n0wGP4PwN3hkI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-darkBrown/80 via-transparent to-transparent"></div>
+<h3 class="relative z-10 text-white font-serif text-2xl tracking-wide">Minimalist</h3>
+</div>
+<!-- Card 2 -->
+<div class="group relative overflow-hidden rounded-xl bg-brand-darkBrown/5 aspect-square border border-brand-darkBrown/10 flex flex-col justify-end p-6 cursor-pointer">
+<img alt="Floral Cake Style" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIB_8Ftiv4hTlJTShJU23EAeOBk3G6x0rwyLtLd0k_ndTJlyN0t-bcOyKWLEAJSNtfmy5PlcDQ5SoZRbZf8YFby6hLJLA3CABXvHjukq2OOxNGie0mkdLFOtx1jDLCnZCOVkJ9hDEtzOL0CzVGK-_jPNnxsTS90TkKvHy9RELeJOb1TXZNU3_v13cUTTGcJA6mfvff_Hon25hZYc6bseKlszkP3LtcKF7zuQcgDvzZM_JqGkYgwol7RQ8wgiQ75HZEbsX1rA0za7Y"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-darkBrown/80 via-transparent to-transparent"></div>
+<h3 class="relative z-10 text-white font-serif text-2xl tracking-wide">Floral</h3>
+</div>
+<!-- Card 3 -->
+<div class="group relative overflow-hidden rounded-xl bg-brand-darkBrown/5 aspect-square border border-brand-darkBrown/10 flex flex-col justify-end p-6 cursor-pointer">
+<img alt="Birthday Cake Style" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKFwsZnkv1PCi6GvDJVQ4XM1OkcwHQzrWSi3ZkJawx0R8U3eTL45iJ0KX7oaPudQf9wHMqD_LVDnJ_B74GWJlugCnF4wvSHQUY6W0y0rxrUwM05PNBTakW4yHAotWBUygvqNI10imF77Swsuyq8tFZjz1HvN7OHe10rjz6BFjQEb0P0s2LGzShFTDU-mAYMeu-ANvwBOMIHFgRSVQVJXuhuaq-Jt5XeY4TWXzdSA3icG6xBM8pqjg3Kz5rqXZ2EXFkFMPoDRx-htM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-darkBrown/80 via-transparent to-transparent"></div>
+<h3 class="relative z-10 text-white font-serif text-2xl tracking-wide">Birthday</h3>
+</div>
+<!-- Card 4 -->
+<div class="group relative overflow-hidden rounded-xl bg-brand-darkBrown/5 aspect-square border border-brand-darkBrown/10 flex flex-col justify-end p-6 cursor-pointer">
+<img alt="Luxury Cake Style" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHqEKnf-zvdsrTtfF2ztRH8wtJf5Egu3vSohk5tQu3IGLtP4T7Yy1UHPMLsYszNw4nhB2PIR8Ddxk-jdMvFWW9ZqRCs3x3VbSbShR8M2_ozWkyVozKm1jfYCyMlZRWt_mB_xw7iCOozFWdwpTj9LEOwQuzwNZiw5wIePQkLZFzjFk7za9QKy6-nVy-CC6ARhDOGyszEZiAvGzEPwK-CSmC7oCcLwVpik-GhpW1xyzPBSPKTdt8oyRChvuQRzRbIyj_NmhV1ymYDgc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-darkBrown/80 via-transparent to-transparent"></div>
+<h3 class="relative z-10 text-white font-serif text-2xl tracking-wide">Luxury</h3>
+</div>
+<!-- Card 5 (Spans 2 columns on lg) -->
+<div class="group relative overflow-hidden rounded-xl bg-brand-darkBrown/5 aspect-square lg:aspect-auto lg:col-span-2 border border-brand-darkBrown/10 flex flex-col justify-end p-6 cursor-pointer">
+<img alt="Wedding &amp; Engagement Cake Style" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB48VESdNHBMKu9KraUmUj6lHBPa20RVvQmxVuJmQISrwqhrLnJVdgE_l1ptRo4X0gMGU3MNwFnP5ZxYLmOOA0MwbUh9oeRejMr3OYQx7jmZNOOgmco6pdIrPyQfdBgtqExn77Gk7kpI1PSyhGUWfWWyk9r_Wj7h-KeZx1nQXD4Ykv99HQS6tmanLRs8jGzYIV-9Zjuob4faY_GeN6vWjAIHBjNWG-V-MSe1kqfU36KGEyyCJsWNx4n7NPS9_5lcUGvye-q8BE1Duk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-darkBrown/80 via-transparent to-transparent"></div>
+<h3 class="relative z-10 text-white font-serif text-2xl tracking-wide">Wedding &amp; Engagement</h3>
+</div>
+<!-- Card 6 -->
+<div class="group relative overflow-hidden rounded-xl bg-brand-darkBrown/5 aspect-square border border-brand-darkBrown/10 flex flex-col justify-end p-6 cursor-pointer">
+<img alt="Corporate Cake Style" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz304O6z9lWHJbDlmotXeBAafTmDsneWRauo5gZ-qMrCVE_uVFOdHt9mA2q81JGr1rzXRWiLVFqKlWDIjkIgzEB0xeD6fKYzJWtgXxrOlqZ8QUCOK1Tub22m_fcDq6QmQpGsnas4XPBoHdkohFWt79v92nKWZY__ebpZKePks1q330NgDbeoWW5K_QWWghu5xXcJ-MHpFTZhiOUO5dGQ-j2vqfaadjahpBYK8UyiKPnysVetC_RaazBcfI5nLkOciY7CO3AkhQnWc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-darkBrown/80 via-transparent to-transparent"></div>
+<h3 class="relative z-10 text-white font-serif text-2xl tracking-wide">Corporate</h3>
+</div>
+<!-- Card 7 -->
+<div class="group relative overflow-hidden rounded-xl bg-brand-darkBrown/5 aspect-square border border-brand-darkBrown/10 flex flex-col justify-end p-6 cursor-pointer">
+<img alt="Photo &amp; Illustration Cake Style" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAotQaxGJoXux2csGwZ_BzJbz64mYUYYnAeWy9-KxE8i5gbGG5Qb34CF_2_N1xVEVfRDpdd2GAH7ttMchwizPxqLoPfg2S7uMcZNXzG4s1V81A-Ts7wf9vSxuyPkPgq2uZMEE5r5KpEw6u7c9excTXqyOw2z28FrAhiJLEr8soyPsjgxPuiNv4f-PzDlaDtJlGRL3b4FjtxyUMLAqom9vk12ZXd4xvAufHrKiaF_rTq19tux5Zg6uliBFW1VpwY9qR77mPPqXXXdcM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-darkBrown/80 via-transparent to-transparent"></div>
+<h3 class="relative z-10 text-white font-serif text-2xl tracking-wide">Photo &amp; Illustration</h3>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Cake Style Gallery -->
+<!-- BEGIN: Pricing Band -->
+<section class="py-16 bg-brand-darkBrown text-brand-offWhite px-4 sm:px-8">
+<div class="max-w-5xl mx-auto">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-serif mb-3 text-brand-gold">Transparent Pricing</h2>
+<p class="text-brand-offWhite/70 font-light">Starting prices based on size and complexity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+<!-- Pricing Tier 1 -->
+<div class="text-center p-6 border border-brand-gold/30 rounded-lg bg-white/5">
+<div class="text-sm uppercase tracking-widest text-brand-gold/80 mb-2">Petite</div>
+<div class="text-3xl font-serif mb-1">from $100</div>
+<div class="text-brand-offWhite/60 text-sm">6-8 servings</div>
+</div>
+<!-- Pricing Tier 2 -->
+<div class="text-center p-6 border border-brand-gold rounded-lg bg-brand-gold/10 relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-gold text-brand-darkBrown text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Popular</div>
+<div class="text-sm uppercase tracking-widest text-brand-gold/80 mb-2 mt-2">Signature</div>
+<div class="text-3xl font-serif mb-1">from $260</div>
+<div class="text-brand-offWhite/60 text-sm">16-20 servings</div>
+</div>
+<!-- Pricing Tier 3 -->
+<div class="text-center p-6 border border-brand-gold/30 rounded-lg bg-white/5">
+<div class="text-sm uppercase tracking-widest text-brand-gold/80 mb-2">Grand</div>
+<div class="text-3xl font-serif mb-1">from $950</div>
+<div class="text-brand-offWhite/60 text-sm">50-70 servings</div>
+</div>
+</div>
+<p class="text-center text-sm text-brand-offWhite/50 italic">Full breakdown shown before ordering.</p>
+</div>
+</section>
+<!-- END: Pricing Band -->
+<!-- BEGIN: Fulfilment -->
+<section class="py-20 px-4 sm:px-8">
+<div class="max-w-4xl mx-auto">
+<h2 class="text-3xl font-serif text-brand-darkBrown mb-10 text-center">Collection &amp; Delivery</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Collection Card -->
+<div class="bg-white p-8 rounded-xl border border-brand-darkBrown/10 shadow-sm flex flex-col items-center text-center">
+<svg class="w-8 h-8 text-brand-caramel mb-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+<h3 class="text-xl font-medium text-brand-darkBrown mb-2">Free Atelier Collection</h3>
+<p class="text-brand-darkBrown/70 text-sm leading-relaxed">
+              Collect your cake directly from our Paris atelier at 12 Rue Royale. Safe packaging provided for transport.
+            </p>
+</div>
+<!-- Delivery Card -->
+<div class="bg-white p-8 rounded-xl border border-brand-darkBrown/10 shadow-sm flex flex-col items-center text-center">
+<svg class="w-8 h-8 text-brand-caramel mb-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+<h3 class="text-xl font-medium text-brand-darkBrown mb-2">Paris Delivery</h3>
+<p class="text-brand-darkBrown/70 text-sm leading-relaxed mb-4">
+              Careful, temperature-controlled delivery within the Paris region.
+            </p>
+<div class="flex gap-3 text-sm font-medium text-brand-caramel">
+<span>Zone 1: $25</span>
+<span class="text-brand-darkBrown/30">|</span>
+<span>Zone 2: $45</span>
+<span class="text-brand-darkBrown/30">|</span>
+<span>Zone 3: $75</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Fulfilment -->
+<!-- BEGIN: FAQ & Disclaimer -->
+<section class="py-16 px-4 sm:px-8 bg-brand-darkBrown/5">
+<div class="max-w-3xl mx-auto">
+<h2 class="text-3xl font-serif text-brand-darkBrown mb-10 text-center">Frequently Asked Questions</h2>
+<!-- Accordion (Simple CSS-only implementation using details/summary) -->
+<div class="space-y-4 mb-16">
+<details class="group bg-white rounded-lg border border-brand-darkBrown/10 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-5 text-brand-darkBrown font-medium">
+<span>How far in advance should I order?</span>
+<span class="shrink-0 transition duration-300 group-open:-rotate-180 text-brand-caramel">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" fill-rule="evenodd"></path></svg>
+</span>
+</summary>
+<div class="px-5 pb-5 text-sm text-brand-darkBrown/70 font-light leading-relaxed">
+              We recommend placing your order at least 2 weeks in advance for standard designs, and 4-6 weeks for complex or large tier cakes.
+            </div>
+</details>
+<details class="group bg-white rounded-lg border border-brand-darkBrown/10 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-5 text-brand-darkBrown font-medium">
+<span>Do you cater to dietary requirements?</span>
+<span class="shrink-0 transition duration-300 group-open:-rotate-180 text-brand-caramel">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" fill-rule="evenodd"></path></svg>
+</span>
+</summary>
+<div class="px-5 pb-5 text-sm text-brand-darkBrown/70 font-light leading-relaxed">
+              Yes, we offer gluten-free, vegan, and nut-free options. Please specify your requirements during the design process. Note that our kitchen handles nuts and gluten.
+            </div>
+</details>
+<details class="group bg-white rounded-lg border border-brand-darkBrown/10 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-5 text-brand-darkBrown font-medium">
+<span>Can I schedule a tasting?</span>
+<span class="shrink-0 transition duration-300 group-open:-rotate-180 text-brand-caramel">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" fill-rule="evenodd"></path></svg>
+</span>
+</summary>
+<div class="px-5 pb-5 text-sm text-brand-darkBrown/70 font-light leading-relaxed">
+              Tasting boxes are available for order online and can be collected from our atelier or delivered within Paris. We offer consultation appointments for wedding cakes over $500.
+            </div>
+</details>
+<details class="group bg-white rounded-lg border border-brand-darkBrown/10 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-5 text-brand-darkBrown font-medium">
+<span>How do I pay?</span>
+<span class="shrink-0 transition duration-300 group-open:-rotate-180 text-brand-caramel">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" fill-rule="evenodd"></path></svg>
+</span>
+</summary>
+<div class="px-5 pb-5 text-sm text-brand-darkBrown/70 font-light leading-relaxed">
+              A 50% deposit is required to secure your order, with the balance due 7 days prior to collection or delivery. We accept all major credit cards.
+            </div>
+</details>
+<details class="group bg-white rounded-lg border border-brand-darkBrown/10 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-5 text-brand-darkBrown font-medium">
+<span>What if I need to cancel?</span>
+<span class="shrink-0 transition duration-300 group-open:-rotate-180 text-brand-caramel">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" fill-rule="evenodd"></path></svg>
+</span>
+</summary>
+<div class="px-5 pb-5 text-sm text-brand-darkBrown/70 font-light leading-relaxed">
+              Cancellations made more than 14 days before the event will receive a full refund of the deposit. Cancellations within 14 days are non-refundable.
+            </div>
+</details>
+</div>
+<!-- Disclaimer Box -->
+<div class="border border-brand-darkBrown/20 rounded-md p-4 text-center bg-brand-offWhite">
+<p class="text-xs text-brand-darkBrown/60 uppercase tracking-widest font-medium mb-1">Please Note</p>
+<p class="text-sm text-brand-darkBrown/80 font-light italic">
+            Generated cake images are visual representations. Handmade cakes may include minor variations in colour, texture, shape and decoration.
+          </p>
+</div>
+</div>
+</section>
+<!-- END: FAQ & Disclaimer -->
+</main>
+<!-- BEGIN: Footer -->
+<footer class="bg-brand-darkBrown text-brand-offWhite py-12 px-4 sm:px-8 border-t-4 border-brand-gold">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8 text-center md:text-left">
+<!-- Brand & Address -->
+<div>
+<h4 class="font-serif text-2xl mb-2 text-brand-gold">Maison Mayan</h4>
+<p class="text-sm text-brand-offWhite/70 font-light mb-1">Parisian Patisserie</p>
+<p class="text-sm text-brand-offWhite/70 font-light">12 Rue Royale, Paris</p>
+</div>
+<!-- Hours -->
+<div>
+<h4 class="font-serif text-lg mb-2 text-brand-offWhite">Atelier Hours</h4>
+<p class="text-sm text-brand-offWhite/70 font-light">Mon - Sat: 9am - 7pm</p>
+<p class="text-sm text-brand-offWhite/70 font-light">Sun: Closed</p>
+</div>
+<!-- Links -->
+<div class="flex flex-col gap-2">
+<a class="text-sm text-brand-offWhite/70 hover:text-brand-gold transition-colors font-light" href="#">Privacy Policy</a>
+<a class="text-sm text-brand-offWhite/70 hover:text-brand-gold transition-colors font-light" href="#">Terms of Service</a>
+<a class="text-sm text-brand-offWhite/70 hover:text-brand-gold transition-colors font-light" href="#">Contact Us</a>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-brand-offWhite/10 text-center text-xs text-brand-offWhite/40">
+      © 2024 Maison Mayan. All rights reserved.
+    </div>
+</footer>
+<!-- END: Footer -->
+</body></html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cake Design Conversation - Maison Mayan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;600&amp;family=Playfair+Display:wght@400;500;600;700&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'mayan-base': '#FDFBF8',
+                        'mayan-ink': '#2C2320',
+                        'mayan-primary': '#8C6239',
+                        'mayan-accent': '#C9A227',
+                        'mayan-rose': '#C98B84',
+                        'mayan-border': '#E7DED2',
+                        'mayan-success': '#2F6B4F',
+                        'mayan-warning': '#9A6B18',
+                        'mayan-error': '#A3312A',
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Playfair Display", "serif"],
+                        "display": ["Playfair Display", "serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["DM Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Custom scrollbar for chat area */
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background-color: #E7DED2;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-mayan-base text-mayan-ink font-body min-h-screen flex flex-col">
+<!-- Progress Bar (Top) -->
+<header class="w-full bg-mayan-base border-b border-mayan-border py-4 px-6 sm:px-8 z-10 sticky top-0">
+<div class="max-w-7xl mx-auto">
+<h1 class="sr-only">Cake Design Progress</h1>
+<div class="flex items-center justify-between w-full max-w-2xl mx-auto relative">
+<!-- Progress Line Background -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 bg-mayan-border z-0"></div>
+<!-- Steps -->
+<!-- Step 1: Describe (Active) -->
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-4 h-4 rounded-full bg-mayan-primary border-2 border-mayan-base shadow-sm ring-2 ring-mayan-primary/20"></div>
+<span class="mt-2 text-xs font-semibold text-mayan-primary uppercase tracking-wider">Describe</span>
+</div>
+<!-- Step 2: Confirm -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-4 h-4 rounded-full bg-mayan-base border-2 border-mayan-border"></div>
+<span class="mt-2 text-xs font-medium text-mayan-ink/60 uppercase tracking-wider">Confirm</span>
+</div>
+<!-- Step 3: Design -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-4 h-4 rounded-full bg-mayan-base border-2 border-mayan-border"></div>
+<span class="mt-2 text-xs font-medium text-mayan-ink/60 uppercase tracking-wider">Design</span>
+</div>
+<!-- Step 4: Order -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-4 h-4 rounded-full bg-mayan-base border-2 border-mayan-border"></div>
+<span class="mt-2 text-xs font-medium text-mayan-ink/60 uppercase tracking-wider">Order</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content: Two-column grid -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 flex flex-col md:flex-row gap-8 lg:gap-12 relative">
+<!-- Left Column: Chat Interface (2/3) -->
+<section class="flex-grow md:w-2/3 flex flex-col h-[calc(100vh-140px)] md:h-auto min-h-[500px]">
+<header class="mb-6 hidden md:block">
+<h2 class="font-headline text-3xl text-mayan-ink leading-tight">Design Conversation</h2>
+<p class="text-mayan-ink/70 mt-1">Chat with our atelier to specify your perfect creation.</p>
+</header>
+<!-- Chat Area -->
+<div aria-live="polite" class="flex-grow overflow-y-auto chat-scroll pr-2 flex flex-col gap-6 pb-6">
+<!-- Assistant Message 1 -->
+<div class="flex items-end gap-3 max-w-[85%] self-start">
+<div class="w-8 h-8 rounded-full bg-mayan-primary/10 flex items-center justify-center flex-shrink-0 text-mayan-primary border border-mayan-primary/20">
+<span class="material-symbols-outlined text-sm" data-icon="cake">cake</span>
+</div>
+<div class="bg-white border border-mayan-border rounded-2xl rounded-bl-none px-5 py-4 shadow-[0_2px_8px_rgba(44,35,32,0.03)]">
+<p class="text-mayan-ink leading-relaxed">Tell me about the cake you would like to create.</p>
+</div>
+</div>
+<!-- Customer Message 1 -->
+<div class="flex items-end gap-3 max-w-[85%] self-end">
+<div class="bg-mayan-primary/10 rounded-2xl rounded-br-none px-5 py-4 text-mayan-ink">
+<p class="leading-relaxed">It's my daughter Emma's 20th birthday on 12 September, about 20 people.</p>
+</div>
+</div>
+<!-- Assistant Message 2 -->
+<div class="flex items-end gap-3 max-w-[85%] self-start">
+<div class="w-8 h-8 rounded-full bg-mayan-primary/10 flex items-center justify-center flex-shrink-0 text-mayan-primary border border-mayan-primary/20">
+<span class="material-symbols-outlined text-sm" data-icon="cake">cake</span>
+</div>
+<div class="bg-white border border-mayan-border rounded-2xl rounded-bl-none px-5 py-4 shadow-[0_2px_8px_rgba(44,35,32,0.03)]">
+<p class="text-mayan-ink leading-relaxed">Lovely. For 20 guests I'd suggest our Medium size. What flavours does Emma enjoy?</p>
+</div>
+</div>
+<!-- Typing Indicator (Simulated) -->
+<div class="flex items-end gap-3 max-w-[85%] self-start mt-2 opacity-50">
+<div class="w-8 h-8 rounded-full bg-mayan-primary/5 flex items-center justify-center flex-shrink-0 text-mayan-primary/50">
+<span class="material-symbols-outlined text-sm" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="text-xs text-mayan-ink/50 italic">Atelier is typing...</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="mt-auto pt-4 bg-mayan-base/90 backdrop-blur-sm sticky bottom-0 border-t border-mayan-border/50 md:border-t-0 md:bg-transparent md:backdrop-blur-none">
+<!-- Suggested Prompts / Chips -->
+<div class="flex flex-wrap gap-2 mb-4">
+<button class="px-4 py-1.5 text-sm rounded-full border border-mayan-border text-mayan-ink/80 hover:border-mayan-primary hover:text-mayan-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-mayan-primary focus:ring-offset-1 focus:ring-offset-mayan-base">
+                        Something floral
+                    </button>
+<button class="px-4 py-1.5 text-sm rounded-full border border-mayan-border text-mayan-ink/80 hover:border-mayan-primary hover:text-mayan-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-mayan-primary focus:ring-offset-1 focus:ring-offset-mayan-base">
+                        Not sure about flavour
+                    </button>
+<button class="px-4 py-1.5 text-sm rounded-full border border-mayan-border text-mayan-ink/80 hover:border-mayan-primary hover:text-mayan-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-mayan-primary focus:ring-offset-1 focus:ring-offset-mayan-base">
+                        It's for a wedding
+                    </button>
+</div>
+<!-- Text Input -->
+<div class="relative flex items-end gap-2">
+<button aria-label="Upload image" class="p-3 text-mayan-ink/60 hover:text-mayan-primary transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-mayan-primary mb-1" type="button">
+<span class="material-symbols-outlined" data-icon="add_photo_alternate">add_photo_alternate</span>
+</button>
+<div class="relative flex-grow">
+<textarea class="w-full bg-white border border-mayan-border rounded-xl py-3 pl-4 pr-12 focus:ring-2 focus:ring-mayan-primary focus:border-mayan-primary resize-none overflow-hidden block shadow-sm placeholder:text-mayan-ink/40" placeholder="Type your message..." rows="1" style="min-height: 48px;"></textarea>
+</div>
+<button class="bg-mayan-primary hover:bg-[#7a5430] text-white p-3 rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-mayan-primary focus:ring-offset-2 focus:ring-offset-mayan-base mb-1 flex items-center justify-center" type="button">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Right Column: Sticky Summary Sidebar (1/3) -->
+<aside class="w-full md:w-1/3 relative z-20">
+<!-- Pinned Sheet on Mobile, Sticky Column on Desktop -->
+<div class="md:sticky md:top-24 bg-white border border-mayan-border rounded-xl shadow-[0_4px_24px_rgba(44,35,32,0.04)] overflow-hidden flex flex-col">
+<div class="p-5 border-b border-mayan-border bg-mayan-base/30">
+<h3 class="font-headline text-xl text-mayan-ink font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-mayan-accent text-lg" data-icon="receipt_long">receipt_long</span>
+                        Your cake so far
+                    </h3>
+</div>
+<!-- Specification List -->
+<div class="p-5 flex-grow overflow-y-auto max-h-[409px] md:max-h-[512px] text-sm">
+<dl class="space-y-3">
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Event</dt>
+<dd class="text-mayan-ink text-right">Birthday</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Date</dt>
+<dd class="text-mayan-ink text-right">12 September 2026</dd>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-2 border-t border-mayan-border/50">
+<dt class="text-mayan-ink/60 font-medium">Servings</dt>
+<dd class="text-mayan-ink text-right">20</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Size</dt>
+<dd class="text-mayan-ink text-right">Medium</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Shape</dt>
+<dd class="text-mayan-ink text-right">Round</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Tiers</dt>
+<dd class="text-mayan-ink text-right">1</dd>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-2 border-t border-mayan-border/50">
+<dt class="text-mayan-ink/60 font-medium">Flavour</dt>
+<dd class="text-mayan-ink text-right">Vanilla</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Filling</dt>
+<dd class="text-mayan-ink/50 italic text-right">Not chosen yet</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Frosting</dt>
+<dd class="text-mayan-ink/50 italic text-right">Not chosen yet</dd>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-2 border-t border-mayan-border/50">
+<dt class="text-mayan-ink/60 font-medium">Style</dt>
+<dd class="text-mayan-ink text-right">Floral</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Colours</dt>
+<dd class="text-mayan-ink text-right">Pink/Cream/Gold</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Decorations</dt>
+<dd class="text-mayan-ink/50 italic text-right">Not chosen yet</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium">Inscription</dt>
+<dd class="text-mayan-ink text-right">"Happy Birthday Emma"</dd>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-2 border-t border-mayan-border/50">
+<dt class="text-mayan-ink/60 font-medium">Dietary</dt>
+<dd class="text-mayan-ink text-right">None</dd>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<dt class="text-mayan-ink/60 font-medium leading-tight">Collection or delivery</dt>
+<dd class="text-mayan-ink/50 italic text-right flex items-center justify-end">Not chosen yet</dd>
+</div>
+</dl>
+</div>
+<!-- Price and Actions -->
+<div class="p-5 bg-mayan-base/50 border-t border-mayan-border">
+<!-- Capacity Indicator -->
+<div class="flex items-center justify-center gap-2 mb-4 text-xs text-mayan-success font-medium bg-white border border-mayan-success/20 py-1.5 px-3 rounded-full inline-flex w-full">
+<span class="w-2 h-2 rounded-full bg-mayan-success relative">
+<span class="absolute inset-0 rounded-full bg-mayan-success animate-ping opacity-75"></span>
+</span>
+                        12 September has capacity
+                    </div>
+<!-- Price Block -->
+<div class="border border-mayan-border bg-white rounded-lg p-4 mb-5 text-center shadow-sm">
+<p class="text-mayan-ink/70 text-xs uppercase tracking-widest mb-1 font-semibold">Estimated so far</p>
+<p class="font-headline text-3xl text-mayan-ink font-semibold mb-2">$340</p>
+<a class="text-mayan-primary hover:text-[#7a5430] text-sm underline underline-offset-4 decoration-mayan-primary/30 transition-colors" href="#">See breakdown</a>
+</div>
+<!-- Primary Action -->
+<div class="flex flex-col items-center">
+<button class="w-full bg-mayan-primary hover:bg-[#7a5430] text-white font-medium py-3.5 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-mayan-primary focus:ring-offset-2 focus:ring-offset-mayan-base shadow-sm">
+                            Review full specification
+                        </button>
+<p class="text-xs text-mayan-ink/50 mt-3 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]" data-icon="info">info</span>
+                            3 details still needed
+                        </p>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</body></html>
