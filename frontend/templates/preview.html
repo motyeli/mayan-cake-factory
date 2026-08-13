@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Your design — {{ app_name }}{% endblock %}
+
+{# Design preview, revisions and version history (spec §8.4).
+
+   Generation takes about a minute with a real provider, so this page polls
+   and shows staged progress rather than freezing (spec §51). The revision
+   allowance shown here is a courtesy — the backend enforces it. #}
+
+{% block nav %}<a href="/design">Back to the conversation</a>{% endblock %}
+
+{% block progress %}
+<ol class="progress-steps">
+  <li>Describe</li>
+  <li>Confirm</li>
+  <li aria-current="step">Design</li>
+  <li>Order</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <h1>Your cake design</h1>
+
+  <p class="notice notice--error" data-error hidden role="alert"></p>
+
+  <div class="preview-layout">
+    <section aria-labelledby="preview-heading">
+      <h2 class="visually-hidden" id="preview-heading">Design preview</h2>
+
+      <div class="preview-stage" data-stage>
+        {# Staged progress, announced to screen readers. Never a bare spinner. #}
+        <div class="preview-progress" data-progress role="status" aria-live="polite">
+          <span class="typing"><span></span><span></span><span></span></span>
+          <p data-progress-text>Creating your design. This usually takes about a minute.</p>
+        </div>
+        <img data-image hidden alt="">
+      </div>
+
+      <p class="helper-text" data-disclaimer></p>
+
+      <h3 class="panel-heading">Versions</h3>
+      <ul class="version-strip" data-versions></ul>
+    </section>
+
+    <aside class="preview-side">
+      <section class="card">
+        <h2 class="panel-heading">This design</h2>
+        <dl class="spec-list" data-spec></dl>
+        <p class="summary-total"><span>Price</span><strong data-price>—</strong></p>
+        <p class="price-block__estimate" data-price-note hidden></p>
+      </section>
+
+      <section class="card" aria-labelledby="revision-heading">
+        <h2 class="card__title" id="revision-heading">Would you like to change anything?</h2>
+        <div class="field">
+          <label for="revision">Describe the change</label>
+          <textarea id="revision" rows="3"
+                    placeholder="Make the flowers smaller, or change the main colour to white"></textarea>
+        </div>
+        <p class="helper-text" data-revision-count></p>
+        <button class="button button--primary button--block" type="button" data-revise>
+          Request this change
+        </button>
+      </section>
+
+      <button class="button button--primary button--block" type="button" data-approve>
+        Approve this design
+      </button>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/preview.js') }}"></script>
+{% endblock %}

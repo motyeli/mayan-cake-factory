@@ -45,6 +45,11 @@ def create_app() -> Flask:
     def home():
         return render_template("home.html")
 
+    @app.get("/design/preview")
+    def design_preview():
+        """Design preview, revisions and version history."""
+        return render_template("preview.html")
+
     @app.get("/design/summary")
     def design_summary():
         """The confirmation gate before image generation."""

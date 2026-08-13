@@ -141,3 +141,31 @@ def test_home_page_has_hooks_for_settings_driven_copy(client):
 def test_hero_image_has_meaningful_alt_text(client):
     html = client.get("/").get_data(as_text=True)
     assert "buttercream" in html and "alt=" in html
+
+
+# ----------------------------------------------------------- design preview
+
+def test_preview_page_renders(client):
+    assert client.get("/design/preview").status_code == 200
+
+
+def test_preview_shows_staged_progress_not_a_bare_spinner(client):
+    """Generation takes about a minute with a real provider. Spec section 51
+    requires a clear progress state, not a frozen screen."""
+    html = client.get("/design/preview").get_data(as_text=True)
+    assert 'role="status"' in html
+    assert 'aria-live="polite"' in html
+    assert "about a minute" in html
+
+
+def test_preview_has_revision_and_approval_controls(client):
+    html = client.get("/design/preview").get_data(as_text=True)
+    assert "Request this change" in html
+    assert "Approve this design" in html
+    assert 'for="revision"' in html          # the textarea has a real label
+
+
+def test_preview_page_has_no_external_requests(client):
+    html = client.get("/design/preview").get_data(as_text=True)
+    for forbidden in ("cdn.tailwindcss.com", "fonts.googleapis.com", "Material+Symbols"):
+        assert forbidden not in html
