@@ -1,5 +1,9 @@
-{# Base layout. Real visual design lands in Phase 3 from Stitch; this
-   establishes the accessible document skeleton every page inherits. #}
+{# Base layout, following the Stitch design system.
+
+   No external requests: no Tailwind CDN (spec §37 rules out frontend
+   frameworks) and no Google Fonts link, which would send every visitor's IP
+   to a third party — a GDPR problem for a French business (AD-12). Icons are
+   inline SVG for the same reason. #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,17 +17,40 @@
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header">
-    <nav aria-label="Primary">
-      <a class="brand" href="/">{{ app_name }}</a>
-    </nav>
+    <div class="site-header__inner">
+      <a class="brand" href="/">
+        Maison Mayan
+        <small>Parisian Patisserie</small>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        {% block nav %}
+        <a href="/#how-it-works">How it works</a>
+        <a href="/#styles">Our styles</a>
+        <a href="/#questions">Questions</a>
+        <a class="button button--primary" href="/design">Design Your Cake</a>
+        {% endblock %}
+      </nav>
+    </div>
   </header>
+
+  {% block progress %}{% endblock %}
 
   <main id="main">
     {% block content %}{% endblock %}
   </main>
 
   <footer class="site-footer">
-    <p>{{ app_name }} — Paris. Generated cake images are visual representations.</p>
+    <div class="site-footer__inner">
+      <div>
+        <strong>Maison Mayan</strong><br>
+        Parisian patisserie, near the Eiffel Tower
+      </div>
+      <div>Collection 10:00–18:00<br>Delivery across Paris</div>
+      <div>
+        <a href="/privacy">Privacy</a> · <a href="/cancellation">Cancellation policy</a>
+      </div>
+      <div>Generated cake images are visual representations.</div>
+    </div>
   </footer>
 
   <script src="{{ url_for('static', filename='js/api.js') }}"></script>

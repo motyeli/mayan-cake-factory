@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Design your cake — {{ app_name }}{% endblock %}
+
+{# The AI design conversation, following the Stitch screen
+   docs/design/screenshots/customer-chat.jpg. Every figure on this page comes
+   from the backend: the assistant never states a price or confirms
+   availability. #}
+
+{% block nav %}
+<a href="/">Home</a>
+{% endblock %}
+
+{% block progress %}
+<ol class="progress-steps">
+  <li aria-current="step">Describe</li>
+  <li>Confirm</li>
+  <li>Design</li>
+  <li>Order</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="design-layout">
+
+  <section class="chat" aria-labelledby="chat-heading">
+    <h1 id="chat-heading">Design Conversation</h1>
+    <p>Chat with our atelier to shape your cake. Tell us as much or as little as you like.</p>
+
+    {# Screen readers are told when the assistant replies, without stealing
+       focus from the input the customer is typing in. #}
+    <div class="chat__thread" data-thread role="log" aria-live="polite" aria-label="Conversation"></div>
+
+    <p class="notice notice--error" data-error hidden role="alert"></p>
+
+    <div class="chat__suggestions" data-suggestions></div>
+
+    <form class="chat__composer" data-composer>
+      <label class="visually-hidden" for="message">Your message</label>
+      <textarea id="message" name="message" rows="2" required
+                placeholder="Tell me about the cake you would like to create…"></textarea>
+
+      <label class="icon-button" title="Attach an inspiration image">
+        <span class="visually-hidden">Attach an inspiration image</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+        </svg>
+        <input type="file" accept="image/jpeg,image/png,image/webp" hidden data-upload>
+      </label>
+
+      <button class="button button--primary" type="submit" data-send>
+        <span class="visually-hidden">Send message</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </form>
+  </section>
+
+  <aside class="spec-panel" aria-labelledby="spec-heading">
+    <div class="card">
+      <h2 class="panel-heading" id="spec-heading">Your cake so far</h2>
+      <dl class="spec-list" data-spec></dl>
+    </div>
+
+    <div class="price-block">
+      <div class="price-block__label">Estimated so far</div>
+      <div class="price-block__amount" data-price>—</div>
+      <div class="price-block__estimate" data-price-note hidden></div>
+      <button class="button button--quiet" type="button" data-breakdown-toggle hidden>
+        See breakdown
+      </button>
+      <dl class="spec-list" data-breakdown hidden></dl>
+    </div>
+
+    <p class="availability" data-availability hidden>
+      <span class="dot" data-availability-dot></span>
+      <span data-availability-text></span>
+    </p>
+
+    <div>
+      <button class="button button--primary button--block" type="button"
+              data-review aria-disabled="true">
+        Review full specification
+      </button>
+      <p class="helper-text" data-missing></p>
+    </div>
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/design.js') }}"></script>
+{% endblock %}

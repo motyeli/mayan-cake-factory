@@ -45,6 +45,12 @@ def create_app() -> Flask:
     def home():
         return render_template("home.html")
 
+    @app.get("/design")
+    def design():
+        """The AI design conversation. The session token is held in the
+        browser's sessionStorage, so this route needs no state of its own."""
+        return render_template("design.html")
+
     @app.get("/healthz")
     def healthz():
         return {"status": "ok", "service": "frontend", "environment": app.config["APP_ENV"]}

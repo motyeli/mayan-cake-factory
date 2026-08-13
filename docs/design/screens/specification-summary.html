@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Maison Mayan - Cake Confirmation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'paper': '#FDFBF8',
+                        'ink': '#2C2320',
+                        'primary': '#8C6239',
+                        'accent': '#C9A227',
+                        'rose': '#C98B84',
+                        'border': '#E7DED2',
+                        'success': '#2F6B4F',
+                        'warning': '#9A6B18',
+                        'error': '#A3312A',
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Playfair Display", "serif"],
+                        "display": ["Playfair Display", "serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["DM Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-paper text-ink font-body h-full flex flex-col min-h-screen selection:bg-rose/30">
+<!-- TopNavBar -->
+<header class="w-full top-0 sticky z-50 bg-[#FDFBF8] border-b border-[#E7DED2]">
+<div class="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+<div class="font-headline text-2xl font-semibold text-[#2C2320]">Maison Mayan</div>
+<!-- Hide nav shell on this transactional page as per rules, but keeping it empty container to maintain flex layout space if needed, or omit. Since rule says suppress on task-focused/linear flow, omitting links. -->
+<div class="hidden">Atelier, Collections, Our Story, Contact</div>
+<!-- Trailing Action could be shown or hidden, rule says suppress shell but it's a TopNavBar component injected style. We keep minimal structure -->
+<button class="bg-[#FDFBF8] text-[#8C6239] border border-[#8C6239] px-4 py-2 rounded font-medium hover:bg-primary/5 transition-colors">Design a Cake</button>
+</div>
+</header>
+<main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
+<!-- Progress Bar -->
+<div class="mb-12 max-w-3xl mx-auto">
+<div class="flex items-center justify-between relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-px bg-border -z-10"></div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1/3 h-px bg-primary -z-10 transition-all duration-500"></div>
+<!-- Step 1 -->
+<div class="flex flex-col items-center gap-2 bg-paper px-2">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium">
+<span class="material-symbols-outlined" style="font-size: 16px;">check</span>
+</div>
+<span class="text-sm font-medium text-primary">Describe</span>
+</div>
+<!-- Step 2 (Active) -->
+<div class="flex flex-col items-center gap-2 bg-paper px-2">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium ring-4 ring-primary/20">
+                        2
+                    </div>
+<span class="text-sm font-medium text-ink">Confirm</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-2 bg-paper px-2">
+<div class="w-8 h-8 rounded-full bg-white border border-border text-border flex items-center justify-center text-sm font-medium">
+                        3
+                    </div>
+<span class="text-sm text-ink/50">Design</span>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center gap-2 bg-paper px-2">
+<div class="w-8 h-8 rounded-full bg-white border border-border text-border flex items-center justify-center text-sm font-medium">
+                        4
+                    </div>
+<span class="text-sm text-ink/50">Order</span>
+</div>
+</div>
+</div>
+<!-- Header -->
+<div class="mb-12 text-center">
+<h1 class="font-headline text-4xl lg:text-5xl tracking-tight text-ink mb-4">Please confirm your cake</h1>
+<p class="text-ink/70 max-w-2xl mx-auto">Review the specifications for your custom design before we begin modeling.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+<!-- Left Column: Specs -->
+<div class="lg:col-span-8">
+<div class="bg-white rounded-lg p-8 shadow-sm border border-border/50">
+<h2 class="font-headline text-2xl mb-6 pb-4 border-b border-border">Specifications</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Event type</span>
+<span class="font-medium text-ink">Birthday</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Date</span>
+<span class="font-medium text-ink">12 September 2026</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Servings</span>
+<span class="font-medium text-ink">20</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Size</span>
+<span class="font-medium text-ink">Medium</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Shape</span>
+<span class="font-medium text-ink">Round</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Tiers</span>
+<span class="font-medium text-ink">1</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Flavour</span>
+<span class="font-medium text-ink">Vanilla</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Filling</span>
+<span class="font-medium text-ink">Raspberry cream</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Frosting</span>
+<span class="font-medium text-ink">Buttercream</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Item -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Style</span>
+<span class="font-medium text-ink">Floral</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Colours -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group md:col-span-2">
+<div>
+<span class="text-sm text-ink/60 block mb-2">Colours</span>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 rounded-full bg-[#FFB6C1] shadow-sm border border-border"></div>
+<span class="text-sm font-medium">Light Pink</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 rounded-full bg-white shadow-sm border border-border"></div>
+<span class="text-sm font-medium">White</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 rounded-full bg-[#D4AF37] shadow-sm border border-border"></div>
+<span class="text-sm font-medium">Gold</span>
+</div>
+</div>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Decorations -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group md:col-span-2">
+<div>
+<span class="text-sm text-ink/60 block mb-2">Decorations</span>
+<div class="flex flex-wrap gap-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded border border-border bg-paper text-sm font-medium">
+                                        Fresh flowers
+                                    </span>
+<span class="inline-flex items-center px-2.5 py-1 rounded border border-border bg-paper text-sm font-medium">
+                                        Edible gold leaf
+                                    </span>
+</div>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Inscription -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group md:col-span-2">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Inscription</span>
+<span class="font-medium text-ink font-headline italic">"Happy Birthday Emma"</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<!-- Dietary & Fulfilment -->
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Dietary requirements</span>
+<span class="font-medium text-ink">None</span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+<div class="flex justify-between items-baseline border-b border-border/30 pb-3 group">
+<div>
+<span class="text-sm text-ink/60 block mb-1">Fulfilment</span>
+<span class="font-medium text-ink flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">local_shipping</span>
+                                    Delivery
+                                </span>
+</div>
+<button class="text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Change</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Price -->
+<div class="lg:col-span-4">
+<div class="bg-white rounded-lg p-6 shadow-sm border border-border/50 sticky top-32">
+<h3 class="font-headline text-xl mb-6 pb-4 border-b border-border flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">receipt_long</span>
+                        Estimated Price
+                    </h3>
+<div class="space-y-3 mb-6">
+<div class="flex justify-between text-sm">
+<span class="text-ink/80">Medium base</span>
+<span class="font-medium">$260.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-ink/80">Filling raspberry cream</span>
+<span class="font-medium">$20.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-ink/80">Fresh flowers</span>
+<span class="font-medium">$30.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-ink/80">Edible gold leaf</span>
+<span class="font-medium">$40.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-ink/80">Complexity level 2</span>
+<span class="font-medium">$70.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-ink/80">Delivery zone 1</span>
+<span class="font-medium">$25.00</span>
+</div>
+</div>
+<div class="border-t border-border pt-4">
+<div class="flex justify-between items-end">
+<span class="font-medium text-ink">Total</span>
+<span class="text-2xl font-medium text-ink">$445.00</span>
+</div>
+<p class="text-xs text-ink/50 mt-2 text-right">Subject to bakery approval</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Allergen Note -->
+<div class="mt-8 p-4 bg-paper border border-warning/30 rounded-lg flex items-start gap-3 max-w-3xl">
+<span class="material-symbols-outlined text-warning shrink-0 mt-0.5">info</span>
+<p class="text-sm text-ink/80 leading-relaxed">
+<span class="font-medium text-ink">Allergen Notice:</span> The bakery handles gluten, dairy, eggs, nuts, and other allergens. Cross-contamination cannot be completely excluded.
+            </p>
+</div>
+<!-- Actions -->
+<div class="mt-12 pt-8 border-t border-border flex flex-col-reverse sm:flex-row items-center justify-end gap-4">
+<button class="w-full sm:w-auto px-6 py-3 rounded-lg border border-border text-ink hover:bg-black/5 focus:ring-2 focus:ring-primary/50 transition-colors font-medium">
+                Keep editing
+            </button>
+<button class="w-full sm:w-auto px-8 py-3 rounded-lg bg-primary text-white hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-paper transition-colors font-medium shadow-sm">
+                Create my design
+            </button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto bg-[#FDFBF8] border-t border-[#E7DED2]">
+<div class="flex flex-col items-center gap-6 py-12 px-8 max-w-7xl mx-auto">
+<div class="font-headline text-xl text-[#2C2320]">Maison Mayan</div>
+<div class="flex gap-6 text-sm">
+<a class="text-[#2C2320] hover:text-[#C9A227] transition-colors" href="#">Sustainability</a>
+<a class="text-[#2C2320] hover:text-[#C9A227] transition-colors" href="#">Allergens</a>
+<a class="text-[#2C2320] hover:text-[#C9A227] transition-colors" href="#">Shipping</a>
+<a class="text-[#2C2320] hover:text-[#C9A227] transition-colors" href="#">Terms of Service</a>
+</div>
+<div class="font-body text-sm text-[#2C2320] opacity-70">© 2024 Maison Mayan Patisserie. Crafted in Paris.</div>
+</div>
+</footer>
+</body></html>
