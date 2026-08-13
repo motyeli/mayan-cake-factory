@@ -27,7 +27,8 @@ construction.
 | production | frontend-production-80b13 | backend-production-7665 |
 
 All four on `*.up.railway.app`. Railway project `a054005f-d7ca-46ce-b5d5-06adf9d0d985`.
-Development deploys from `dev`, production from `main`.
+Development deploys from `dev`. Production is *configured* for `main` but is not
+yet building from it — see the open item below.
 
 Both backends return `"database": "ok"` and `"missing_credentials": []`.
 Production reports `environment: production` and runs `AI_MODE=mock` on purpose
