@@ -29,7 +29,7 @@ troubleshooting guides.
 | 5 | AI conversation | ⏳ |
 | 6 | Design generation & revisions | ⏳ |
 | 7 | Ordering & admin | ⏳ |
-| 8 | Deployment & docs | ⏳ |
+| 8 | Deployment & docs | 🔸 dev live, prod pending |
 
 ## Architecture
 
@@ -41,6 +41,19 @@ frontend/   Flask + Jinja + vanilla JS   ──fetch (CORS)──▶   backend/ 
                                                                   ▼
                                               Supabase: Postgres · Storage · Auth
 ```
+
+## Live environments
+
+| Environment | Frontend | Backend | Branch |
+|---|---|---|---|
+| Development | https://frontend-development-706f.up.railway.app | https://backend-development-1382.up.railway.app | `dev` |
+| Production | not deployed yet | not deployed yet | `main` |
+
+Verified on the development deployment: `/health` reports `database: ok`, and a
+full order — design generated, stored, approved, confirmed — was placed end to
+end against it.
+
+See [docs/deployment.md](docs/deployment.md).
 
 ## Supabase projects
 
