@@ -184,11 +184,13 @@ def _parse_relative_date(text: str, today: date) -> str | None:
     if re.search(r"\btoday\b|\btonight\b", text):
         return today.isoformat()
 
-    # "in two weeks", "2 weeks from now", "in a fortnight", "in 10 days"
+    # "in two weeks", "2 weeks from now", "in a fortnight", "10 days".
+    # The bare form matters most: asked "when do you need it?", customers
+    # answer "two weeks", not "in two weeks". "ago" is excluded so
+    # "I ordered one two weeks ago" is not read as a delivery date.
     count = rf"(\d{{1,2}}|{'|'.join(_COUNT_WORDS)})"
     unit = r"(day|week|fortnight|month)s?"
-    match = (re.search(rf"\bin\s+{count}\s+{unit}\b", text)
-             or re.search(rf"\b{count}\s+{unit}\s+from\s+(?:now|today)\b", text))
+    match = re.search(rf"\b(?:in\s+)?{count}\s+{unit}\b(?!\s+ago)", text)
     if match:
         raw, unit_name = match.group(1), match.group(2)
         n = int(raw) if raw.isdigit() else _COUNT_WORDS[raw]
