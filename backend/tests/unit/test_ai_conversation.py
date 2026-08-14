@@ -92,9 +92,14 @@ def test_past_dates_roll_to_next_year():
 @pytest.mark.parametrize(
     ("text", "expected"),
     [
+        # The bare form is what was actually reported: asked "when do you need
+        # it?", a customer answers "two weeks", not "in two weeks".
+        ("two weeks", "2026-08-27"),
+        ("2 weeks", "2026-08-27"),
         ("in two weeks", "2026-08-27"),
         ("I need it in 2 weeks", "2026-08-27"),
         ("two weeks from now", "2026-08-27"),
+        ("I ordered one two weeks ago", None),
         ("in a week", "2026-08-20"),
         ("in 10 days", "2026-08-23"),
         ("in a fortnight", "2026-08-27"),
