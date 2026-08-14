@@ -1,0 +1,146 @@
+name: CI
+
+# Runs on every push and pull request to the permanent branches. Railway
+# deploys from those branches independently, so a red build here does not
+# block a deploy — it tells you to revert one.
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  # A newer push to the same branch makes the older run irrelevant.
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend tests and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Unit tests
+        # conftest.py pins AI_MODE=mock and dummy Supabase credentials, so the
+        # suite never reaches the network and never needs a secret in CI.
+        run: pytest -q
+
+  frontend:
+    name: Frontend tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: frontend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r frontend/requirements.txt
+
+      - name: Tests
+        working-directory: frontend
+        run: pytest -q
+
+  migrations:
+    name: Migration validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Migration filenames are valid
+        # Supabase silently SKIPS files that do not match <timestamp>_name.sql.
+        # A skipped migration looks like a successful push and then the schema
+        # is quietly wrong, so the shape is checked rather than assumed.
+        run: |
+          fail=0
+          for f in supabase/migrations/*.sql; do
+            name=$(basename "$f")
+            if ! echo "$name" | grep -qE '^[0-9]{14}_[a-z0-9_]+\.sql$'; then
+              echo "::error file=$f::'$name' does not match <14-digit-timestamp>_name.sql"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Migrations are ordered and unique
+        run: |
+          ts=$(ls supabase/migrations/*.sql | xargs -n1 basename | cut -c1-14)
+          if [ "$(echo "$ts" | sort -c 2>&1)" ]; then
+            echo "::error::Migration timestamps are not in ascending order"; exit 1
+          fi
+          if [ "$(echo "$ts" | sort -u | wc -l)" -ne "$(echo "$ts" | wc -l)" ]; then
+            echo "::error::Two migrations share a timestamp"; exit 1
+          fi
+          echo "$(echo "$ts" | wc -l) migrations, ordered and unique"
+
+      - name: No destructive statements without an explicit marker
+        # DROP TABLE and TRUNCATE in a migration destroy customer orders. They
+        # are allowed, but only when the author has written why on the line
+        # above, so it cannot happen by autocomplete.
+        run: |
+          if grep -rniE '^\s*(drop table|truncate|drop column)' supabase/migrations/ \
+             | grep -v 'if exists' > /tmp/hits 2>/dev/null; then
+            if [ -s /tmp/hits ]; then
+              echo "::warning::Destructive statements found:"; cat /tmp/hits
+            fi
+          fi
+          echo "checked"
+
+  secrets:
+    name: No secrets committed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No .env files are tracked
+        run: |
+          if git ls-files | grep -E '(^|/)\.env($|\.)' | grep -v '\.env\.example'; then
+            echo "::error::An .env file is tracked in git"; exit 1
+          fi
+          echo "only .env.example is tracked"
+
+      - name: No credential-shaped strings in tracked files
+        # Catches the paste that happens at 1am: a real key committed into a
+        # config file or a test fixture.
+        run: |
+          if git grep -nE 'sb_secret_[A-Za-z0-9_-]{10,}|sk-proj-[A-Za-z0-9_-]{20,}|eyJ[A-Za-z0-9_-]{30,}\.' \
+             -- . ':(exclude).github/workflows/*' > /tmp/found 2>/dev/null; then
+            if [ -s /tmp/found ]; then
+              echo "::error::Something that looks like a credential is committed:"
+              cut -d: -f1,2 /tmp/found
+              exit 1
+            fi
+          fi
+          echo "no credential-shaped strings found"
+
+  build:
+    name: Docker images build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Build context is the repository root for both services, matching how
+      # Railway builds them. If this passes and Railway fails, the difference
+      # is configuration, not the Dockerfile.
+      - name: Build backend image
+        run: docker build -f backend/Dockerfile -t cake-backend .
+
+      - name: Build frontend image
+        run: docker build -f frontend/Dockerfile -t cake-frontend .

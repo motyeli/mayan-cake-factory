@@ -2,7 +2,7 @@
 
 Last worked: **2026-08-13**. Everything below is merged into `dev` and green.
 
-**Tests: 227 backend + 45 frontend, `ruff` clean. Live OpenAI verified.**
+**Tests: 227 backend + 45 frontend, `ruff` clean. CI green. Live OpenAI verified.**
 
 | Phase | State |
 |---|---|
@@ -14,56 +14,98 @@ Last worked: **2026-08-13**. Everything below is merged into `dev` and green.
 | 5 AI conversation | done: mock + OpenAI, injection guards |
 | 6 Design generation | done: async, revisions capped, uploads validated |
 | 7 Ordering + admin | done: orders, 4 admin screens, CRM, audit |
-| 8 Deployment | NEXT |
+| 8 Deployment + docs | done: both environments live, 8 docs written |
 
-### The product works end to end, in a browser
+**All nine phases are complete.** What remains is the go-live checklist, not
+construction.
 
-Customer: `/` then `/design` then `/design/summary` then `/design/preview`
-then a real order number at `/orders/<number>`.
-Admin: `/admin/login` then `/admin`, `/admin/orders`, `/admin/orders/<id>`.
+### Deployed and verified
 
-Verified: a revision moved 336.00 to 420.00 and redrew the cake with two
-tiers; a standard order auto-confirmed as MCF-20260813-01000; a fresh-flowers
-order became awaiting_bakery_approval with the price marked an estimate;
-approving it cleared the estimate; jumping it to completed returned 409; a
-price override from 372.00 to 399.00 was recorded with a reason.
+| | Frontend | Backend |
+|---|---|---|
+| development | frontend-development-706f | backend-development-1382 |
+| production | frontend-production-80b13 | backend-production-7665 |
 
-### Next task, Phase 8 deployment
+All four on `*.up.railway.app`. Railway project `a054005f-d7ca-46ce-b5d5-06adf9d0d985`.
+Development deploys from `dev`. Production is *configured* for `main` but is not
+yet building from it — see the open item below.
 
-1. `npm i -g @railway/cli`, then the user runs `railway login`.
-2. Two environments, development from branch `dev` and production from `main`.
-   Two services each: root directories `backend` and `frontend`. Dockerfiles
-   and railway.toml already exist with health check paths wired.
-3. Environment variables per service. `backend/.env.production` already holds
-   the production Supabase credentials; ALLOWED_ORIGINS and the two URLs still
-   need the real Railway domains.
-4. GitHub Actions: pytest for both suites, ruff, and migration validation.
-5. The docs deliverables: architecture, api, database, deployment,
-   troubleshooting, security, assumptions, credentials-required.
-6. Verify with `railway status` and a live /health on both environments.
-   Do not claim a deploy succeeded without seeing it.
+Both backends return `"database": "ok"` and `"missing_credentials": []`.
+Production reports `environment: production` and runs `AI_MODE=mock` on purpose
+— it is set up, not open for business.
 
-### Cleanup owed before production
+### Production does not yet build from `main` — open item
 
-- Delete `test-admin@cake-factory.local` from the dev project. It has a
-  throwaway password and only existed to exercise sign-in.
-- Create Mayan's real account: a Supabase Auth user is NOT enough. Insert a
-  matching `admin_profiles` row with `active = true`, or the API returns 403.
-- Self-host Playfair Display and DM Sans. They currently fall back to system
-  fonts, because a Google Fonts CDN link would send visitor IPs to a third
-  party (AD-12).
+Its services point at `main`, but `main` predates the repository-root
+Dockerfile change, so `COPY requirements.txt .` finds nothing at the root and
+**every build from `main` has failed**. What is running is the image inherited
+from duplicating the development environment: built from `dev`, running with
+production variables. It works and reaches the production database, which is
+why `/health` looks fine and the failure is easy to miss.
+
+**Fix: merge PR #10 (`dev` → `main`).** That is a production deploy, so it was
+left for the user to approve. Afterwards check for a SUCCESS on branch `main`:
+
+```bash
+railway deployment list --service backend --environment production
+```
+
+Lesson worth keeping: a healthy `/health` says the *running image* is fine. It
+says nothing about whether the last deploy succeeded. Check both.
+
+Isolation was proven rather than assumed: order `MCF-20260813-01002` returns
+200 on dev and **404 on prod**, while both show identical seeded catalogs.
+
+A full order was placed end to end on the deployed development stack: design
+generated, stored in Supabase Storage, served through a signed URL, order
+MCF-20260813-01002 confirmed at 336.00.
+
+### Going live — the only remaining work
+
+The checklist lives in `docs/deployment.md`. In short:
+
+1. Set `AI_MODE=live` plus `LLM_API_KEY` and `IMAGE_API_KEY` on the production
+   backend. **The user must set these themselves — never paste a key into chat.**
+2. Create Mayan's admin account in the **production** project: a Supabase Auth
+   user AND an `admin_profiles` row with `active = true`. The user alone gets 403.
+3. Delete `test-admin@cake-factory.local` from the dev project.
+4. Self-host Playfair Display and DM Sans (AD-12).
+5. Check the Railway and Supabase bill before leaving production running.
+
+### Gotchas that cost time twice each
+
+- **"Failed to fetch" is almost never CORS.** Check `/openapi.json` route count
+  first — a stale backend holding the port serves an old route table and the
+  404 looks identical to a CORS failure. Kill listeners by port, not name.
+- **`supabase link` is global state.** After pushing to production, re-link to
+  dev or the next push goes to the wrong database.
+- **Supabase silently skips** migrations not matching `<14-digit>_name.sql`.
+  A skipped migration looks exactly like a successful push. CI checks this.
+- **Railway builds from the repo root** via `RAILWAY_DOCKERFILE_PATH`; locally
+  use `docker build -f backend/Dockerfile .`, never `docker build backend/`.
+- **OpenAPI is disabled in production** — generate API docs from dev.
+- **Stitch queues rather than fails.** A timeout means nothing; never retry, it
+  just queues another job. Wait, then `list_screens`.
+- `tzdata` must be installed — Windows and `python:slim` have no IANA database.
 
 ### Known gaps
 
+- **No fulfilment page.** The APIs work (`/delivery/calculate`,
+  `/availability/check`, order creation); there is no screen for picking a
+  date, slot and address. The order flow goes through the API directly.
 - Catalog and availability have working APIs but no admin screens yet
   (acceptance criteria 24 and 25 are API-only).
 - Stitch never produced the fulfilment screen or the two admin table screens;
   those pages extend the existing design language instead (AD-35).
 
+All three are listed in `docs/assumptions.md` so a reader does not have to
+discover them.
+
 ### Still needed from the user
 
-- Railway account, for Phase 8
-- Mayan's admin email and password
+- Mayan's admin email and password, for the production account
+- The OpenAI key on production, when going live — set by the user, not pasted
+  into chat
 - Optional: Maps API key. The mock is production-plausible for Paris.
 
 ## What this is

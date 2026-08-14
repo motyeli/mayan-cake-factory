@@ -1,3 +1,8 @@
+# Build context is the REPOSITORY ROOT — see backend/Dockerfile for why.
+#
+# Local equivalent, run from the repo root:
+#   docker build -f frontend/Dockerfile -t cake-frontend .
+
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -5,12 +10,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /srv
 
-COPY requirements.txt .
+COPY frontend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app.py .
-COPY templates ./templates
-COPY static ./static
+COPY frontend/app.py .
+COPY frontend/templates ./templates
+COPY frontend/static ./static
 
 RUN useradd --create-home --uid 10001 appuser && chown -R appuser /srv
 USER appuser
