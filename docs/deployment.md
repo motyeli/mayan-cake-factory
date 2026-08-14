@@ -3,10 +3,12 @@
 Two Railway environments, each with two services, deploying from two Git
 branches.
 
-| Railway environment | Git branch | Services | Supabase project |
-|---|---|---|---|
-| `development` | `dev` | `backend`, `frontend` | `cake-factory-dev` (`ntngfmeucypgpjvdxcdo`) |
-| `production` | `main` | `backend`, `frontend` | `cake-factory-prod` (`zdbzwjqhfzjwpctmrclg`) |
+Railway project `mayan-cake-factory` — `0eff19da-70d4-4f5a-9caf-0ead71ed0707`.
+
+| Railway environment | Git branch | Frontend | Backend | Supabase project |
+|---|---|---|---|---|
+| `dev` | `dev` | frontend-dev-3e33 | backend-dev-b0f4 | `cake-factory-dev` (`ntngfmeucypgpjvdxcdo`) |
+| `production` | `main` | frontend-production-d6f7 | backend-production-fabf8 | `cake-factory-prod` (`zdbzwjqhfzjwpctmrclg`) |
 
 They share nothing: separate databases, separate service-role keys, separate
 storage buckets, separate URLs.
@@ -37,24 +39,70 @@ single `.dockerignore` at the root rather than one per service.
 
 Everything below is reproducible from a terminal. No step needs the web UI.
 
+> **Order matters more than anything else on this page.** Read the model below
+> before running a single command — getting the sequence wrong produces an
+> environment that cannot deploy at all, and no command will fix it afterwards.
+
+### Railway's model
+
+**Services are project-level. Each environment holds an *instance* of a
+service.** An environment created *before* the services exist receives no
+instances — and then nothing can deploy into it. Every route fails identically:
+
+```
+railway service source connect      → ServiceInstance not found
+railway redeploy                    → service doesn't exist in this environment
+railway up                          → 404 Failed to upload
+serviceInstanceDeploy (GraphQL)     → Service Instance not found
+environmentTriggersDeploy (GraphQL) → ServiceInstance not found
+serviceInstanceUpdate (GraphQL)     → returns true, creates nothing
+```
+
+The only cure is to duplicate an environment that already has instances.
+
+**Branch tracking is a deployment trigger, not a service property.** There is
+no `branch` field on a service or an instance. `railway add --branch X` creates
+triggers in **every** environment at once, so a second environment on a
+different branch must be repointed afterwards.
+
+### The sequence that works
+
 ```bash
 npm install -g @railway/cli
 railway login                       # opens a browser
-railway init --name mayan-cake-factory --workspace "<your workspace>"
-railway environment new development
+railway init --name mayan-cake-factory
 ```
 
-Add the services. `--branch` is what ties an environment to a Git branch:
+`init` creates a `production` environment. Add the services **into it first**,
+so the instances exist before any other environment is created:
 
 ```bash
-railway environment link development
-railway add --service backend  --repo <owner>/<repo> --branch dev
-railway add --service frontend --repo <owner>/<repo> --branch dev
-
 railway environment link production
 railway add --service backend  --repo <owner>/<repo> --branch main
 railway add --service frontend --repo <owner>/<repo> --branch main
 ```
+
+Then create `dev` by duplicating, which copies the instances:
+
+```bash
+railway environment new dev --duplicate production
+```
+
+Finally repoint `dev`'s triggers to the `dev` branch — the duplicate inherits
+`main`. There is no CLI command; use the API:
+
+```bash
+railway api 'query { project(id: "<project-id>") { deploymentTriggers { edges {
+  node { id branch environmentId serviceId } } } } }'
+
+railway api 'mutation { deploymentTriggerUpdate(id: "<trigger-id>",
+  input: { branch: "dev" }) { id branch } }'
+```
+
+> **A duplicated environment inherits the source environment's variables**,
+> including `SUPABASE_URL` and the service-role key. Overwrite them immediately
+> or the new environment talks to the wrong database — which nothing surfaces
+> until someone reads the data. The isolation check below is what catches it.
 
 ## Variables
 
@@ -62,7 +110,7 @@ Set per service, per environment. Never committed.
 
 **Backend** — the service-role key lives only here and never reaches a browser:
 
-| Variable | development | production |
+| Variable | dev | production |
 |---|---|---|
 | `APP_ENV` | `development` | `production` |
 | `SECRET_KEY` | from `backend/.env` | from `backend/.env.production` |
@@ -87,10 +135,10 @@ backend's public URL:
 Setting them:
 
 ```bash
-railway variables --service backend --environment development \
+railway variables --service backend --environment dev \
   --set "APP_ENV=development" --set "SUPABASE_URL=..."
 
-railway variables --service backend --environment development   # verify
+railway variables --service backend --environment dev   # verify
 ```
 
 > **The URLs are circular.** `ALLOWED_ORIGINS` needs the frontend's domain and
@@ -101,34 +149,43 @@ railway variables --service backend --environment development   # verify
 ## Domains
 
 ```bash
-railway domain --service frontend --environment development
-railway domain --service backend  --environment development
+railway domain --service frontend --environment dev
+railway domain --service backend  --environment dev
 ```
 
 ## Deploying
 
-Pushing to the branch is the deploy. `dev` updates development, `main` updates
-production.
+Pushing to the branch is the deploy. `dev` updates the `dev` environment, `main`
+updates production.
 
 ```bash
-git push origin dev                 # development
+git push origin dev                 # dev environment
 gh pr create --base main --head dev # production, via a reviewed PR
 ```
 
 Manual redeploy of the current commit:
 
 ```bash
-railway redeploy --service backend --environment development --yes
+railway redeploy --service backend --environment dev --yes
 ```
 
 ## Verifying — do this before saying it worked
 
-```bash
-railway service status
-railway service logs --service backend --environment development
+**Two checks, and neither substitutes for the other.**
 
-curl -s https://<backend-domain>/health | python -m json.tool
-curl -s -o /dev/null -w "%{http_code}\n" https://<frontend-domain>/healthz
+`/health` describes the **running image**. It says nothing about whether the
+last deploy succeeded. A previous version of this project ran for days with a
+green health check sitting on top of nine consecutive failed builds, serving an
+image inherited from another environment.
+
+```bash
+# 1. did the last deploy actually succeed, and from the right branch?
+railway deployment list --service backend --environment production
+#    expect: SUCCESS  branch=main
+
+# 2. is the thing that is running healthy?
+curl -s https://backend-production-fabf8.up.railway.app/health | python -m json.tool
+curl -s -o /dev/null -w "%{http_code}\n" https://frontend-production-d6f7.up.railway.app/healthz
 ```
 
 A healthy backend returns:
@@ -136,6 +193,22 @@ A healthy backend returns:
 ```json
 {"status": "ok", "database": "ok", "ai_mode": "mock", "missing_credentials": []}
 ```
+
+### Isolation — the check worth repeating
+
+Configuring two Supabase projects is not evidence that they *are* separate. Ask
+both for the same record:
+
+```bash
+curl -s -o /dev/null -w "dev  %{http_code}\n" https://backend-dev-b0f4.up.railway.app/api/v1/orders/<order-number>
+curl -s -o /dev/null -w "prod %{http_code}\n" https://backend-production-fabf8.up.railway.app/api/v1/orders/<order-number>
+```
+
+Expect **200 on dev, 404 on production**, with both returning identical seeded
+catalogs. Every plausible failure here — a copied variable, a stale
+`supabase link`, a duplicated environment that inherited its parent's
+credentials — produces configuration that looks correct and a system that is
+not. Only reading from both settles it.
 
 `"database": "unreachable"` means the Supabase variables are wrong or the
 project is paused. `missing_credentials` lists exactly what is absent — the
