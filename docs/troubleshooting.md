@@ -76,6 +76,39 @@ Expected on the **first** deploy. `ALLOWED_ORIGINS` needs the frontend domain
 and `BACKEND_URL` needs the backend's, and neither exists until after deploying.
 Set them, then redeploy. Sequence, not failure.
 
+## Railway says "ServiceInstance not found" and nothing can deploy
+
+The environment has no *instance* of the service. Services are project-level;
+each environment holds an instance, and an environment created **before** the
+services existed never gets one. Every deploy route then fails the same way —
+`service source connect`, `redeploy`, `railway up`, `serviceInstanceDeploy`,
+`environmentTriggersDeploy`. `serviceInstanceUpdate` returns `true` and creates
+nothing, which is the confusing part.
+
+No command repairs it. Duplicate an environment that already has instances:
+
+```bash
+railway environment delete <broken-env> --yes
+railway environment new <name> --duplicate <working-env>
+```
+
+Then fix the two things a duplicate inherits: its **branch triggers** point at
+the source environment's branch, and its **variables** are the source
+environment's — including `SUPABASE_URL` and the service-role key.
+
+## A deploy succeeded but the wrong branch is running
+
+Check what the deployment list says, not what you configured:
+
+```bash
+railway deployment list --service backend --environment production
+```
+
+Branch tracking is a *deployment trigger*, not a service property, and
+`railway add --branch X` writes triggers into **every** environment at once. A
+second environment on a different branch must be repointed with
+`deploymentTriggerUpdate` — there is no CLI command for it.
+
 ## Railway build fails on `COPY requirements.txt`
 
 The build context is the **repository root**, so paths are root-relative

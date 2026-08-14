@@ -21,37 +21,50 @@ construction.
 
 ### Deployed and verified
 
-| | Frontend | Backend |
-|---|---|---|
-| development | frontend-development-706f | backend-development-1382 |
-| production | frontend-production-80b13 | backend-production-7665 |
+Railway project `mayan-cake-factory` — `0eff19da-70d4-4f5a-9caf-0ead71ed0707`.
 
-All four on `*.up.railway.app`. Railway project `a054005f-d7ca-46ce-b5d5-06adf9d0d985`.
-Development deploys from `dev`. Production is *configured* for `main` but is not
-yet building from it — see the open item below.
+| Env | Branch | Frontend | Backend |
+|---|---|---|---|
+| `dev` | `dev` | frontend-dev-3e33 | backend-dev-b0f4 |
+| `production` | `main` | frontend-production-d6f7 | backend-production-fabf8 |
+
+All four on `*.up.railway.app`. **Both environments deploy `SUCCESS` from their
+own branch** — production from `main`, confirmed at the deployment level, not
+only by `/health`.
 
 Both backends return `"database": "ok"` and `"missing_credentials": []`.
 Production reports `environment: production` and runs `AI_MODE=mock` on purpose
 — it is set up, not open for business.
 
-### Production does not yet build from `main` — open item
+Rebuilt from scratch on 2026-08-14. The previous project was deleted; it had
+reached its shape by duplicating dev into production, which left production
+serving an inherited image while every build from `main` failed behind a green
+health check.
 
-Its services point at `main`, but `main` predates the repository-root
-Dockerfile change, so `COPY requirements.txt .` finds nothing at the root and
-**every build from `main` has failed**. What is running is the image inherited
-from duplicating the development environment: built from `dev`, running with
-production variables. It works and reaches the production database, which is
-why `/health` looks fine and the failure is easy to miss.
-
-**Fix: merge PR #10 (`dev` → `main`).** That is a production deploy, so it was
-left for the user to approve. Afterwards check for a SUCCESS on branch `main`:
+**The lesson that cost the most: a healthy `/health` describes the *running
+image*. It says nothing about whether the last deploy succeeded.** Check both:
 
 ```bash
-railway deployment list --service backend --environment production
+railway deployment list --service backend --environment production   # SUCCESS on branch=main
+curl -s https://backend-production-fabf8.up.railway.app/health
 ```
 
-Lesson worth keeping: a healthy `/health` says the *running image* is fine. It
-says nothing about whether the last deploy succeeded. Check both.
+### Railway's model, learned the hard way
+
+- **Services are project-level; each environment holds an *instance*.** An
+  environment created *before* the services exist gets no instances, and then
+  nothing can deploy into it — `service source connect`, `redeploy`,
+  `serviceInstanceDeploy`, `environmentTriggersDeploy` and `railway up` all
+  fail with "Service Instance not found". The only fix is
+  `railway environment new <name> --duplicate <existing>`.
+- **Branch tracking is a *deployment trigger*, not a service field.** There is
+  no `branch` on ServiceInstance. `railway add --branch X` creates triggers in
+  **every** environment, so production must be repointed afterwards via
+  `deploymentTriggerUpdate`.
+- **Duplicating an environment copies its variables**, including Supabase
+  credentials. Overwrite them immediately or production talks to the dev
+  database — invisible until someone reads the data.
+- `railway domain` generates domains automatically on first deploy.
 
 Isolation was proven rather than assumed: order `MCF-20260813-01002` returns
 200 on dev and **404 on prod**, while both show identical seeded catalogs.

@@ -18,21 +18,17 @@ Conversation → Structured spec → Feasibility → Availability → Price → 
 
 Both environments are deployed and verified.
 
-| | Frontend | Backend |
-|---|---|---|
-| development | [frontend-development-706f](https://frontend-development-706f.up.railway.app) | [backend-development-1382](https://backend-development-1382.up.railway.app) |
-| production | [frontend-production-80b13](https://frontend-production-80b13.up.railway.app) | [backend-production-7665](https://backend-production-7665.up.railway.app) |
+| Env | Branch | Frontend | Backend |
+|---|---|---|---|
+| `dev` | `dev` | [frontend-dev-3e33](https://frontend-dev-3e33.up.railway.app) | [backend-dev-b0f4](https://backend-dev-b0f4.up.railway.app) |
+| `production` | `main` | [frontend-production-d6f7](https://frontend-production-d6f7.up.railway.app) | [backend-production-fabf8](https://backend-production-fabf8.up.railway.app) |
+
+Each environment builds from its own branch, and both report `SUCCESS` at the
+deployment level — not merely a green health check.
 
 Production is **set up but not open for business**: it runs `AI_MODE=mock` with
 no OpenAI key, and the go-live checklist in
 [docs/deployment.md](docs/deployment.md) is not yet worked through.
-
-> One caveat, stated plainly: production's services point at `main`, but `main`
-> does not yet contain the repository-root Dockerfile change, so every build
-> from it has failed. What currently serves production is the image inherited
-> from duplicating the development environment — it runs, and it reaches the
-> production database, but it is not a build of `main`. PR #10 merges `dev`
-> into `main` and fixes this.
 
 ### Documentation
 
@@ -74,12 +70,15 @@ frontend/   Flask + Jinja + vanilla JS   ──fetch (CORS)──▶   backend/ 
 
 | Environment | Frontend | Backend | Branch |
 |---|---|---|---|
-| Development | https://frontend-development-706f.up.railway.app | https://backend-development-1382.up.railway.app | `dev` |
-| Production | not deployed yet | not deployed yet | `main` |
+| `dev` | https://frontend-dev-3e33.up.railway.app | https://backend-dev-b0f4.up.railway.app | `dev` |
+| `production` | https://frontend-production-d6f7.up.railway.app | https://backend-production-fabf8.up.railway.app | `main` |
 
-Verified on the development deployment: `/health` reports `database: ok`, and a
-full order — design generated, stored, approved, confirmed — was placed end to
-end against it.
+Both report `database: ok` against **separate** Supabase projects, proven rather
+than assumed: an order held in the dev database returns 200 on dev and 404 on
+production, while both serve identical seeded catalogs.
+
+A full order — design generated, stored, approved, confirmed — was placed end to
+end against the deployed development stack.
 
 See [docs/deployment.md](docs/deployment.md).
 
