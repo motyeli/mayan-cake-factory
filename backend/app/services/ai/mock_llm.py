@@ -12,7 +12,8 @@ fault rather than the model's mood.
 from __future__ import annotations
 
 import re
-from datetime import date
+from calendar import monthrange
+from datetime import date, timedelta
 
 from app.schemas.specification import FIELD_LABELS
 from app.services.ai.providers import (
@@ -155,7 +156,61 @@ def _parse_date(text: str, today: date) -> str | None:
         if match.group(1) in _MONTHS:
             return _resolve(int(match.group(2)), _MONTHS[match.group(1)], today)
 
+    return _parse_relative_date(text, today)
+
+
+_COUNT_WORDS = {"a": 1, "an": 1, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+                "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
+                "twelve": 12}
+
+_WEEKDAYS = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
+             "friday": 4, "saturday": 5, "sunday": 6}
+
+_UNIT_DAYS = {"day": 1, "week": 7, "fortnight": 14}
+
+
+def _parse_relative_date(text: str, today: date) -> str | None:
+    """"in two weeks", "next Saturday", "tomorrow".
+
+    Customers say these far more often than they say "12 September", and the
+    assistant *suggests* "Next Saturday" and "In two weeks" as quick replies.
+    Without this the customer taps a suggestion the parser cannot read, the
+    date stays empty, and the same question comes back — forever.
+    """
+    if re.search(r"\bday after tomorrow\b", text):
+        return (today + timedelta(days=2)).isoformat()
+    if re.search(r"\btomorrow\b", text):
+        return (today + timedelta(days=1)).isoformat()
+    if re.search(r"\btoday\b|\btonight\b", text):
+        return today.isoformat()
+
+    # "in two weeks", "2 weeks from now", "in a fortnight", "in 10 days"
+    count = rf"(\d{{1,2}}|{'|'.join(_COUNT_WORDS)})"
+    unit = r"(day|week|fortnight|month)s?"
+    match = (re.search(rf"\bin\s+{count}\s+{unit}\b", text)
+             or re.search(rf"\b{count}\s+{unit}\s+from\s+(?:now|today)\b", text))
+    if match:
+        raw, unit_name = match.group(1), match.group(2)
+        n = int(raw) if raw.isdigit() else _COUNT_WORDS[raw]
+        if unit_name == "month":
+            return _add_months(today, n).isoformat()
+        return (today + timedelta(days=n * _UNIT_DAYS[unit_name])).isoformat()
+
+    # "next Saturday" / "this Saturday" / bare "Saturday" — the coming one.
+    match = re.search(rf"\b(?:next|this|on)?\s*({'|'.join(_WEEKDAYS)})\b", text)
+    if match:
+        ahead = (_WEEKDAYS[match.group(1)] - today.weekday()) % 7
+        return (today + timedelta(days=ahead or 7)).isoformat()
+
     return None
+
+
+def _add_months(start: date, months: int) -> date:
+    """Clamp to the month's length so 31 January + 1 month is 28/29 February."""
+    month_index = start.month - 1 + months
+    year = start.year + month_index // 12
+    month = month_index % 12 + 1
+    return date(year, month, min(start.day, monthrange(year, month)[1]))
 
 
 def _resolve(day: int, month: int, today: date) -> str | None:

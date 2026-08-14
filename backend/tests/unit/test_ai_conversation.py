@@ -88,6 +88,64 @@ def test_past_dates_roll_to_next_year():
     assert extract_from_text("on 3 February", today=TODAY).event_date == "2027-02-03"
 
 
+# TODAY is 2026-08-13, a Thursday.
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("in two weeks", "2026-08-27"),
+        ("I need it in 2 weeks", "2026-08-27"),
+        ("two weeks from now", "2026-08-27"),
+        ("in a week", "2026-08-20"),
+        ("in 10 days", "2026-08-23"),
+        ("in a fortnight", "2026-08-27"),
+        ("in three months", "2026-11-13"),
+        ("tomorrow", "2026-08-14"),
+        ("the day after tomorrow", "2026-08-15"),
+        ("next Saturday", "2026-08-15"),
+        ("this Sunday", "2026-08-16"),
+        ("next Thursday", "2026-08-20"),  # today is Thursday — the next one
+        ("chocolate and gold", None),
+    ],
+)
+def test_relative_dates(text, expected):
+    """Customers say "in two weeks" far more often than "12 September".
+
+    This is a regression test for a real loop: the assistant *suggests*
+    "Next Saturday" and "In two weeks" as quick replies, the parser could not
+    read either, so tapping a suggestion left the date empty and the same
+    question came back forever.
+    """
+    assert extract_from_text(text, today=TODAY).event_date == expected
+
+
+def test_suggested_replies_are_parseable():
+    """Whatever the assistant offers as a chip, it must be able to read back."""
+    turn = asyncio.run(
+        MockLLM(today=TODAY).converse(
+            messages=[ChatMessage(role="user", content="a birthday cake for 20 people")],
+            catalog_summary="",
+            specification_state="",
+            missing=["the date you need it"],
+        )
+    )
+    for suggestion in turn.suggested_replies:
+        if "week" in suggestion.lower() or any(
+            day in suggestion.lower()
+            for day in ("monday", "tuesday", "wednesday", "thursday",
+                        "friday", "saturday", "sunday")
+        ):
+            assert extract_from_text(suggestion, today=TODAY).event_date is not None, (
+                f"assistant suggests {suggestion!r} but cannot parse it back"
+            )
+
+
+def test_month_addition_clamps_to_month_length():
+    """31 January + 1 month is the 28th, not a crash or a rolled-over 3 March."""
+    assert extract_from_text(
+        "in one month", today=date(2026, 1, 31)
+    ).event_date == "2026-02-28"
+
+
 def test_raspberry_cream_is_a_filling_not_a_flavour():
     got = extract_from_text("vanilla sponge with raspberry cream", today=TODAY)
     assert got.cake_flavor == "Vanilla"
